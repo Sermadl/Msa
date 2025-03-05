@@ -1,0 +1,22 @@
+type Item {
+    id: ID!
+    name: String!
+    description: String!
+    quantity: Int!
+    sellerId: ID!
+}
+
+input ItemRegisterRequest {
+    name: String!
+    description: String!
+    quantity: Int!
+    sellerId: ID!
+}
+
+type Mutation {
+    registerItem(request: ItemRegisterRequest!): Item
+}
+
+type Query {
+    allUsers: [Item]
+}
