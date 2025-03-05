@@ -1,0 +1,37 @@
+package com.orderservice.model.entity;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Orders {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private LocalDateTime orderDate;
+    private Long customerId;
+    private Long itemId;
+    private int quantity;
+    private String address;
+    private String description;
+
+    public Orders(Long customerId, Long itemId, int quantity, String address, String description) {
+        this.orderDate = LocalDateTime.now();
+        this.customerId = customerId;
+        this.itemId = itemId;
+        this.quantity = quantity;
+        this.address = address;
+        this.description = description;
+    }
+}
