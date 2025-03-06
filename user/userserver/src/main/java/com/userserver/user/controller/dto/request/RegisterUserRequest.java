@@ -1,4 +1,4 @@
-package com.userserver.controller.dto.request;
+package com.userserver.user.controller.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
