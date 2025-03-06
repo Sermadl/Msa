@@ -1,14 +1,12 @@
-package com.itemservice.model.entity;
+package com.userserver.item.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "federated_item")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -21,15 +19,4 @@ public class Item {
     private String description;
     private int quantity;
     private Long sellerId;
-
-    public void changeQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public Item(String name, String description, int quantity, Long sellerId) {
-        this.name = name;
-        this.description = description;
-        this.quantity = quantity;
-        this.sellerId = sellerId;
-    }
 }
