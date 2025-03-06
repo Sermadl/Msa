@@ -13,6 +13,13 @@ type UserOrder {
     description: String!
 }
 
+type UserItem {
+    id: ID!
+    name: String!
+    description: String!
+    quantity: Int!
+}
+
 input RegisterUserRequest {
     name: String!
     password: String!
@@ -27,4 +34,5 @@ type Mutation {
 type Query {
     allUsers: [User]
     getUserOrders(userId: ID!): [UserOrder!]!
+    getUserItems(userId: ID!): [UserItem!]!
 }
