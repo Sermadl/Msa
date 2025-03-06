@@ -26,7 +26,8 @@ public class UserService {
                 arg.getPhone()
         );
 
-        kafkaProducer.sendDbUpdateMessage(user);
-        return userRepository.save(user);
+        return kafkaProducer.sendDbUpdateMessage(
+                userRepository.save(user)
+        );
     }
 }
