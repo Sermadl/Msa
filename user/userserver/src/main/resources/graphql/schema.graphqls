@@ -5,6 +5,14 @@ type User {
     phone: String!
 }
 
+type UserOrder {
+    orderId: ID!
+    orderDate: String!
+    quantity: Int!
+    address: String!
+    description: String!
+}
+
 input RegisterUserRequest {
     name: String!
     password: String!
@@ -18,4 +26,5 @@ type Mutation {
 
 type Query {
     allUsers: [User]
+    getUserOrders(userId: ID!): [UserOrder!]!
 }

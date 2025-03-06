@@ -24,7 +24,8 @@ public class OrderService {
                 arg.getDescription()
         );
 
-        kafkaProducer.sendDbUpdateMessage(order);
-        return orderRepository.save(order);
+        return kafkaProducer.sendDbUpdateMessage(
+                orderRepository.save(order)
+        );
     }
 }

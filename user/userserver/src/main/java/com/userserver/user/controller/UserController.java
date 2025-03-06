@@ -1,12 +1,10 @@
-package com.userserver.controller;
+package com.userserver.user.controller;
 
-import com.userserver.controller.dto.request.RegisterUserRequest;
-import com.userserver.model.entity.User;
-import com.userserver.service.UserService;
+import com.userserver.user.controller.dto.request.RegisterUserRequest;
+import com.userserver.user.model.entity.User;
+import com.userserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 
