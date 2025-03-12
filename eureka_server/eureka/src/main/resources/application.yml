@@ -2,29 +2,6 @@
 server:
   port: 8761
 
-spring:
-  cloud:
-    gateway:
-      discovery:
-        locator:
-          enabled: true  # Eureka에서 자동으로 서비스 찾기
-      mvc:
-        routes:
-          - id: user-service
-            uri: lb://USER-SERVICE
-            predicates:
-              - Header=Service-Type, user
-
-          - id: order-service
-            uri: lb://ORDER-SERVICE
-            predicates:
-              - Header=Service-Type, order
-
-          - id: item-service
-            uri: lb://ITEM-SERVICE
-            predicates:
-              - Header=Service-Type, item
-
 eureka:
   client:
     register-with-eureka: false
