@@ -1,30 +1,13 @@
 version: '3.8'
 
 services:
-  user-db:
-    image: mariadb:latest
-    container_name: user-db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
-      MYSQL_DATABASE: user_db
-      MYSQL_USER: ${USER}
-      MYSQL_PASSWORD: ${PASSWORD}
-    ports:
-      - "3308:3306"
-    volumes:
-      - user_data:/var/lib/mysql
-      - ./user-init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-      - mariadb_network
-
   order-db:
     image: mariadb:latest
     container_name: order-db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
-      MYSQL_DATABASE: order_db
+      MYSQL_DATABASE: order
       MYSQL_USER: ${USER}
       MYSQL_PASSWORD: ${PASSWORD}
     ports:
@@ -34,6 +17,12 @@ services:
       - ./order-init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - mariadb_network
+    healthcheck:
+      test: ["CMD", "mariadb", "-uroot", "-p${ROOT_PASSWORD}", "-e", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   item-db:
     image: mariadb:latest
@@ -41,7 +30,7 @@ services:
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
-      MYSQL_DATABASE: item_db
+      MYSQL_DATABASE: item
       MYSQL_USER: ${USER}
       MYSQL_PASSWORD: ${PASSWORD}
     ports:
@@ -51,6 +40,34 @@ services:
       - ./item-init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - mariadb_network
+    healthcheck:
+      test: ["CMD", "mariadb", "-uroot", "-p${ROOT_PASSWORD}", "-e", "SELECT 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  user-db:
+    image: mariadb:latest
+    container_name: user-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_DATABASE: user
+      MYSQL_USER: ${USER}
+      MYSQL_PASSWORD: ${PASSWORD}
+    ports:
+      - "3308:3306"
+    volumes:
+      - user_data:/var/lib/mysql
+      - ./user-init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - mariadb_network
+    depends_on:
+      order-db:
+        condition: service_healthy
+      item-db:
+        condition: service_healthy
 
 volumes:
   user_data:
