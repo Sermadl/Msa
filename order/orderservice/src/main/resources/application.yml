@@ -1,0 +1,31 @@
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    registry-fetch-interval-seconds: 5000
+    disable-delta: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka # Eureka Server URI 정보를 설정
+
+spring:
+  kafka:
+    bootstrap-servers: localhost:10000,localhost:10001,localhost:10002 # 카프카 서버 주소
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: error-handler-group
+      auto-offset-reset: earliest
+    template:
+      default-topic: error-messages
+
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+#
+#    spring:
+#      jpa:
+#        properties:
+#          hibernate.transaction.jta.platform: org.hibernate.service.jta.JtaPlatform
