@@ -14,7 +14,7 @@ services:
       - "3307:3306"
     volumes:
       - order_data:/var/lib/mysql
-#      - ./order-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./order-init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - mariadb_network
 #    healthcheck:
@@ -37,7 +37,7 @@ services:
       - "3309:3306"
     volumes:
       - item_data:/var/lib/mysql
-#      - ./item-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./item-init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - mariadb_network
 #    healthcheck:
@@ -60,7 +60,7 @@ services:
       - "3308:3306"
     volumes:
       - user_data:/var/lib/mysql
-#      - ./user-init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./user-init.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - mariadb_network
 #    depends_on:
