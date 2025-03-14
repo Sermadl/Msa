@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="deeff345-6bc2-4e0d-bf52-bd0d802271ef" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/../../.idea/msa.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../user/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/user/controller/dto/response/UserInfoResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bff/.gitattributes" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bff/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bff/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bff/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bff/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bff/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bff/src/main/java/com/bff/BffApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bff/src/main/java/com/bff/config/CorsConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bff/src/main/java/com/bff/config/CustomPreFilter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bff/src/main/resources/application.yml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../bff/src/test/java/com/bff/BffApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../eureka_server/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../eureka_server/.idea/eureka_server.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../eureka_server/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../eureka_server/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../eureka_server/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../item/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../item/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../order/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../order/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../order/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../order/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../order/.idea/order.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../order/orderservice/src/main/resources/graphql/schema.graphqls" beforeDir="false" afterPath="$PROJECT_DIR$/../../order/orderservice/src/main/resources/graphql/schema.graphqls" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../user/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../user/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../user/userserver/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../user/userserver/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/global/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/global/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/item/controller/UserItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/item/controller/UserItemController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/order/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/order/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/user/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/user/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/user/controller/dto/request/RegisterUserRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/user/controller/dto/request/RegisterUserRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/user/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../user/userserver/src/main/java/com/userserver/user/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../user/userserver/src/main/resources/graphql/schema.graphqls" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Sermadl&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:Sermadl/Msa.git",
+    "accountId": "c6807574-c69a-4778-809a-fef1e32a3440"
+  }
+}]]></component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2uFkg7k4AJ6Sue80xG3UxXRRaU1" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "Spring Boot.ApiGatewayApplication.executor": "Run",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/serma/Documents/skala/msa/api_gateway/api-gateway/src/main/java/com/apigateway",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/main/java/com/apigateway" />
+      <recent name="$PROJECT_DIR$/src/main/java/com/apigateway/config" />
+      <recent name="$PROJECT_DIR$/src/main/resources" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.apigateway" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="GroovyScriptRunConfiguration" factoryName="Groovy">
+      <setting name="path" value="" />
+      <setting name="vmparams" value="" />
+      <setting name="params" value="" />
+      <setting name="workDir" value="file://$PROJECT_DIR$" />
+      <setting name="debug" value="false" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ApiGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="api-gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.apigateway.ApiGatewayApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.20224.159" />
+        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-IU-242.20224.159" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="deeff345-6bc2-4e0d-bf52-bd0d802271ef" name="Changes" comment="" />
+      <created>1741851820367</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1741851820367</updated>
+      <workItem from="1741851821561" duration="4652000" />
+      <workItem from="1741971905148" duration="520000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

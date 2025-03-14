@@ -1,0 +1,21 @@
+type UserInfoResponse {
+    id: ID!
+    username: String!
+    email: String!
+    phone: String!
+}
+
+input RegisterUserRequest {
+    username: String!
+    password: String!
+    email: String!
+    phone: String!
+}
+
+type Query {
+    user: [UserInfoResponse]
+}
+
+type Mutation {
+    registerUser(request: RegisterUserRequest): UserInfoResponse
+}
