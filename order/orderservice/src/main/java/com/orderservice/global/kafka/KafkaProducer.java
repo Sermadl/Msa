@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.orderservice.model.entity.OrderItem;
 import com.orderservice.model.entity.Orders;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,16 +20,16 @@ public class KafkaProducer {
     private final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule()); // ✅ LocalDateTime 지원 추가
     private final String DB_TOPIC = "db-connection-test";
 
-    public Orders sendDbUpdateMessage(Orders orders) {
+    public OrderItem sendDbUpdateMessage(OrderItem item) {
         String jsonInString = Strings.EMPTY;
         try {
-            jsonInString = mapper.writeValueAsString(orders);
+            jsonInString = mapper.writeValueAsString(item);
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
         }
 
         kafkaTemplate.send(DB_TOPIC, jsonInString);
         log.info("Kafka producer send data from orders microservice: {}", jsonInString);
-        return orders;
+        return item;
     }
 }

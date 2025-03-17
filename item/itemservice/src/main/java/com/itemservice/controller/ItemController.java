@@ -1,22 +1,35 @@
 package com.itemservice.controller;
 
-import com.itemservice.controller.dto.ItemRegisterRequest;
-import com.itemservice.model.entity.Item;
+import com.itemservice.controller.dto.request.ItemRegisterRequest;
+import com.itemservice.controller.dto.response.ItemResponse;
 import com.itemservice.service.ItemService;
+import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.MutationMapping;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/item")
 @Slf4j
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
 
-    @MutationMapping
-    public Item registerItem(@Argument("request") ItemRegisterRequest request) {
-        return itemService.register(request);
+    @GetMapping
+    public ResponseEntity<List<ItemResponse>> getAllItems() {
+        return ResponseEntity.ok(itemService.getAll());
+    }
+
+    @GetMapping("/{itemId}}")
+    public ResponseEntity<ItemResponse> getItemById(@PathVariable("itemId") Long itemId) {
+        return ResponseEntity.ok(itemService.getItem(itemId));
+    }
+
+    @PostMapping
+    public ResponseEntity<ItemResponse> registerItem(@RequestBody ItemRegisterRequest request) {
+        return ResponseEntity.ok(itemService.register(request));
     }
 }

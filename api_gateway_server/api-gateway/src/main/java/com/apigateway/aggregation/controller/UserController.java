@@ -1,10 +1,8 @@
-package com.apigateway.aggregation;
+package com.apigateway.aggregation.controller;
 
-//import com.bff.graphql.client.ItemServiceClient;
-//import com.bff.graphql.client.OrderServiceClient;
-import com.bff.graphql.client.UserServiceClient;
-import com.bff.graphql.client.dto.user.request.RegisterUserRequest;
-import com.bff.graphql.client.dto.user.response.UserInfoResponse;
+import com.apigateway.aggregation.client.UserServiceClient;
+import com.apigateway.aggregation.client.dto.user.request.RegisterUserRequest;
+import com.apigateway.aggregation.client.dto.user.response.UserInfoResponse;
 import graphql.kickstart.tools.GraphQLQueryResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,17 +13,15 @@ import org.springframework.stereotype.Controller;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-@Slf4j
 @Controller
+@Slf4j
 @RequiredArgsConstructor
-public class GraphQLResolver implements GraphQLQueryResolver {
+public class UserController implements GraphQLQueryResolver {
 
     private final UserServiceClient userServiceClient;
-//    private final OrderServiceClient orderServiceClient;
-//    private final ItemServiceClient itemServiceClient;
 
     @QueryMapping
-    public Flux<UserInfoResponse> user() {
+    public Flux<UserInfoResponse> getAllUsers() {
         log.info("Get all users");
 
         Flux<UserInfoResponse> responses = userServiceClient.getAllUsers();
@@ -35,9 +31,21 @@ public class GraphQLResolver implements GraphQLQueryResolver {
         return responses;
     }
 
+    @QueryMapping
+    public Mono<UserInfoResponse> getUser(@Argument("userId") Long userId) {
+        log.info("Get user: {}", userId);
+
+        Mono<UserInfoResponse> response = userServiceClient.getUser(userId);
+
+        log.info(response.toString());
+
+        return response;
+    }
+
     @MutationMapping
     public Mono<UserInfoResponse> registerUser(
-            @Argument("request") RegisterUserRequest request ) {
+            @Argument("request") RegisterUserRequest request
+    ) {
         log.info("Register user");
 
         Mono<UserInfoResponse> response = userServiceClient.registerUser(request);
@@ -46,9 +54,4 @@ public class GraphQLResolver implements GraphQLQueryResolver {
 
         return response;
     }
-
-//    public List<Orders> allOrders() {
-//        return orderServiceClient.getAllOrders();
-//    }
 }
-

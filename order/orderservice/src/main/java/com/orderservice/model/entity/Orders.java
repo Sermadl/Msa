@@ -1,36 +1,31 @@
 package com.orderservice.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.orderservice.global.util.BaseEntity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Orders {
+public class Orders extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private LocalDateTime orderDate;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
     private Long customerId;
-    private Long itemId;
-    private int quantity;
+    private BigDecimal totalPrice;
     private String address;
     private String description;
 
-    public Orders(Long customerId, Long itemId, int quantity, String address, String description) {
-        this.orderDate = LocalDateTime.now();
+    public Orders(Long customerId, BigDecimal totalPrice, String address, String description) {
         this.customerId = customerId;
-        this.itemId = itemId;
-        this.quantity = quantity;
+        this.totalPrice = totalPrice;
         this.address = address;
         this.description = description;
     }

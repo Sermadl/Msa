@@ -23,6 +23,14 @@ public class UserServiceClient {
                 .bodyToFlux(UserInfoResponse.class);
     }
 
+    public Mono<UserInfoResponse> getUser(Long userId) {
+        return webClientBuilder.build()
+                .get()
+                .uri("http://USER-SERVICE/user/{userId}", userId)
+                .retrieve()
+                .bodyToMono(UserInfoResponse.class);
+    }
+
     public Mono<UserInfoResponse> registerUser(RegisterUserRequest request) {
         return webClientBuilder.build()
                 .post()

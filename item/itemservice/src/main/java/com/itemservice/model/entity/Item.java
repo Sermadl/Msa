@@ -8,6 +8,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,16 +22,18 @@ public class Item {
     private String name;
     private String description;
     private int quantity;
+    private BigDecimal price;
     private Long sellerId;
 
     public void changeQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public Item(String name, String description, int quantity, Long sellerId) {
+    public Item(String name, String description, int quantity, BigDecimal price, Long sellerId) {
         this.name = name;
         this.description = description;
         this.quantity = quantity;
+        this.price = price;
         this.sellerId = sellerId;
     }
 }

@@ -21,10 +21,6 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-//                .authorizeHttpRequests(auth -> auth
-//                        .requestMatchers("/graphql", "/graphiql").permitAll() // GraphQL API 허용
-//                        .anyRequest().authenticated() // 나머지는 인증 필요
-//                )
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
     }

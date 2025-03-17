@@ -1,6 +1,7 @@
 package com.userserver.user.controller;
 
 import com.userserver.user.controller.dto.request.RegisterUserRequest;
+import com.userserver.user.controller.dto.response.UserInfoResponse;
 import com.userserver.user.model.entity.User;
 import com.userserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -8,26 +9,38 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/user")
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
 
-    @MutationMapping
-    public User createUser(@Argument("userRequest") RegisterUserRequest arg) {
-        log.info(arg.getName());
-        log.info(arg.getPassword());
-        log.info(arg.getEmail());
-        log.info(arg.getPhone());
-        return userService.register(arg);
+    @GetMapping
+    public ResponseEntity<List<UserInfoResponse>> getAllUsers() {
+        return ResponseEntity.ok(
+                userService.getAll()
+        );
     }
 
-//    @QueryMapping
-//    public List<User> allUsers() {
-//        return userRepository.findAll();
-//    }
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserInfoResponse> getUserById(@PathVariable("userId") Long userId) {
+        return ResponseEntity.ok(userService.getUser(userId));
+    }
+
+    @PostMapping
+    public ResponseEntity<UserInfoResponse> createUser(@RequestBody RegisterUserRequest request) {
+        log.info(request.getUsername());
+        log.info(request.getPassword());
+        log.info(request.getEmail());
+        log.info(request.getPhone());
+        return ResponseEntity.ok(userService.register(request));
+    }
 }

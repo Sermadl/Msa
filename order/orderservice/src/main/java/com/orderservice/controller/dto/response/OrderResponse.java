@@ -1,21 +1,19 @@
-package com.apigateway.aggregation.model;
+package com.orderservice.controller.dto.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
-@Builder
 @AllArgsConstructor
-@NoArgsConstructor
-public class Orders {
+public class OrderResponse {
     private String id;
-    private Long customerId;
-    private BigDecimal totalPrice;
+    private LocalDateTime orderDate;
+    private List<OrderItemResponse> orderItemResponses;
     private String address;
     private String description;
+    private BigDecimal totalPrice;
 }
