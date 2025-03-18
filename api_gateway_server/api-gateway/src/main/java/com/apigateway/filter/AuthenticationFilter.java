@@ -1,6 +1,7 @@
 package com.apigateway.filter;
 
 import com.apigateway.aggregation.client.dto.user.response.ValidTokenResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -19,6 +20,7 @@ import java.util.List;
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
 
     private final WebClient webClient;
+
     private static final List<String> EXCLUDED = List.of(
             "/login",
             "/register",
@@ -45,15 +47,13 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     // JWT 검증을 위해 User Server와 통신
     private Mono<Void> validToken(ServerWebExchange exchange, GatewayFilterChain chain) {
         String header = exchange.getRequest().getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        log.info("Header: {}", header);
+
         if (header == null || !header.startsWith("Bearer ")) {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-
-            log.info("Header: {}", header);
-
             return exchange.getResponse().setComplete();
         }
 
-//        String token = header.substring(7);
         return webClient.get()
                 .uri("/validation")
                 .header(HttpHeaders.AUTHORIZATION, header)
@@ -62,10 +62,15 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 .flatMap(response -> {
                     if(response.isValid()) {
 
+                        log.info("Valid Response");
+
                         exchange.getAttributes().put("userInfo", response);
 
                         return chain.filter(exchange);
                     } else {
+
+                        log.info("Invalid Response");
+
                         return setUnauthorizedResponse(exchange);
                     }
                 })

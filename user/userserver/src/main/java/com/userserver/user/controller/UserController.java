@@ -6,8 +6,6 @@ import com.userserver.user.model.entity.User;
 import com.userserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.MutationMapping;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
 @Slf4j
 @RequiredArgsConstructor
 public class UserController {
@@ -35,7 +32,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getUser(userId));
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<UserInfoResponse> createUser(@RequestBody RegisterUserRequest request) {
         log.info(request.getUsername());
         log.info(request.getPassword());

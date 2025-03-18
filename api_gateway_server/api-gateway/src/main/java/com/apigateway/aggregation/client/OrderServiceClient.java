@@ -1,8 +1,7 @@
 package com.apigateway.aggregation.client;
 
-import com.apigateway.aggregation.client.dto.user.request.PurchaseRequest;
-import com.apigateway.aggregation.client.dto.user.response.OrderResponse;
-import com.apigateway.aggregation.client.dto.user.response.UserInfoResponse;
+import com.apigateway.aggregation.client.dto.order.request.PurchaseRequest;
+import com.apigateway.aggregation.client.dto.order.response.OrderResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
