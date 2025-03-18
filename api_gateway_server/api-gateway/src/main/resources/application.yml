@@ -22,6 +22,7 @@ spring:
           predicates:
             - Header=Service-Type, user
           filters:
+            - name: AuthenticationFilter
             - StripPrefix=0
 
         - id: order-service
