@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class PurchaseItemRequest {
     private Long itemId;
+    private String name;
     private BigDecimal price;
     private int quantity;
 }

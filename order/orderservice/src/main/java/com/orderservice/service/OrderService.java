@@ -67,6 +67,7 @@ public class OrderService {
                     OrderItem orderItem = new OrderItem(
                             order,
                             request.getItemId(),
+                            request.getName(),
                             request.getQuantity(),
                             request.getPrice()
                     );
@@ -113,6 +114,7 @@ public class OrderService {
                         orderItem.getId(),
                         orderItem.getOrder().getId(),
                         orderItem.getItemId(),
+                        orderItem.getName(),
                         orderItem.getPrice(),
                         orderItem.getQuantity(),
                         orderItem.getStatus(),
