@@ -24,8 +24,11 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-#
-#    spring:
-#      jpa:
-#        properties:
-#          hibernate.transaction.jta.platform: org.hibernate.service.jta.JtaPlatform
+
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+    servlet:
+      path: /
+    static-path-pattern: /**
+    webjars-path-pattern: /webjars/**

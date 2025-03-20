@@ -1,4 +1,4 @@
-package com.apigateway.aggregation.client.dto.user.request;
+package com.apigateway.aggregation.client.dto.order.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

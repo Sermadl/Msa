@@ -22,3 +22,19 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+  data:
+    redis:
+      host: ${redis.host}
+      port: ${redis.port}
+      url: redis://${redis.password}@${redis.url}:${port}
+      password: ${redis.password}
+
+jwt:
+  secret: ${jwt.secrets}
+  access:
+    expiration: ${jwt.accessexpire}
+    header: ${jwt.accessheader}
+  refresh:
+    expiration: ${jwt.refreshexpire}
+    header: ${jwt.refreshheader}
