@@ -13,5 +13,5 @@ public class ItemResponse {
     private String description;
     private int quantity;
     private BigDecimal price;
-    private Long userId;
+    private Long sellerId;
 }
