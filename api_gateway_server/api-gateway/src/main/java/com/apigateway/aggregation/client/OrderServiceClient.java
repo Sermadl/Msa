@@ -9,6 +9,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -32,12 +35,14 @@ public class OrderServiceClient {
                 .bodyToMono(OrderResponse.class);
     }
 
-    public Flux<OrderResponse> getPurchaseList(Long customerId) {
+    public Mono<List<OrderResponse>> getPurchaseList(Long customerId) {
         return webClientBuilder.build()
                 .get()
                 .uri("http://ORDER-SERVICE/list/{customerId}", customerId)
                 .retrieve()
-                .bodyToFlux(OrderResponse.class);
+                .bodyToFlux(OrderResponse.class)
+                .collectList()
+                .onErrorReturn(Collections.emptyList());
     }
 
     public Mono<OrderResponse> purchase(PurchaseRequest request) {
