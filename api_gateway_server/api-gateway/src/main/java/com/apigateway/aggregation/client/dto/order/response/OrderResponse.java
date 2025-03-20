@@ -1,4 +1,4 @@
-package com.apigateway.aggregation.client.dto.user.response;
+package com.apigateway.aggregation.client.dto.order.response;
 
 import com.apigateway.aggregation.model.OrderItem;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import java.util.List;
 public class OrderResponse {
     private String id;
     private LocalDateTime orderDate;
-    private List<OrderItem> orderItemResponses;
+    private List<OrderItemResponse> orderItemResponses;
     private String address;
     private String description;
     private BigDecimal totalPrice;

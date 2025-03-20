@@ -1,4 +1,4 @@
-package com.apigateway.aggregation.client.dto.user.response;
+package com.apigateway.aggregation.client.dto.item.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/item")
+@RequestMapping
 @Slf4j
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<ItemResponse>> getAllItems() {
         return ResponseEntity.ok(itemService.getAll());
     }
@@ -28,7 +28,7 @@ public class ItemController {
         return ResponseEntity.ok(itemService.getItem(itemId));
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<ItemResponse> registerItem(@RequestBody ItemRegisterRequest request) {
         return ResponseEntity.ok(itemService.register(request));
     }

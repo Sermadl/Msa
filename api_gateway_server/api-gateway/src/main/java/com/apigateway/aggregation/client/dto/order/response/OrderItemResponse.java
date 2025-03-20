@@ -1,4 +1,4 @@
-package com.apigateway.aggregation.controller.dto.response;
+package com.apigateway.aggregation.client.dto.order.response;
 
 import com.apigateway.aggregation.model.Status;
 import lombok.AllArgsConstructor;

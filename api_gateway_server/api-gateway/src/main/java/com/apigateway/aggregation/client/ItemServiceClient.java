@@ -1,8 +1,7 @@
 package com.apigateway.aggregation.client;
 
-import com.apigateway.aggregation.client.dto.user.request.ItemRegisterRequest;
-import com.apigateway.aggregation.client.dto.user.response.ItemResponse;
-import com.apigateway.aggregation.client.dto.user.response.UserInfoResponse;
+import com.apigateway.aggregation.client.dto.item.request.ItemRegisterRequest;
+import com.apigateway.aggregation.client.dto.item.response.ItemResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -20,7 +19,7 @@ public class ItemServiceClient {
     public Flux<ItemResponse> getAllItems() {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ITEM-SERVICE/item")
+                .uri("http://ITEM-SERVICE/list")
                 .retrieve()
                 .bodyToFlux(ItemResponse.class);
     }
@@ -28,7 +27,7 @@ public class ItemServiceClient {
     public Mono<ItemResponse> getItem(Long itemId) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ITEM-SERVICE/item/{itemId}", itemId)
+                .uri("http://ITEM-SERVICE/{itemId}", itemId)
                 .retrieve()
                 .bodyToMono(ItemResponse.class);
     }
@@ -36,7 +35,7 @@ public class ItemServiceClient {
     public Mono<ItemResponse> registerItem(ItemRegisterRequest request) {
         return webClientBuilder.build()
                 .post()
-                .uri("http://ITEM-SERVICE/item")
+                .uri("http://ITEM-SERVICE/register")
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(ItemResponse.class);

@@ -42,7 +42,7 @@ public class OrderController {
         );
     }
 
-    @PostMapping("/order")
+    @PostMapping("/register")
     public ResponseEntity<OrderResponse> purchase(
             @RequestBody PurchaseRequest request
     ) {

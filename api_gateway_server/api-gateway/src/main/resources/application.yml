@@ -20,20 +20,30 @@ spring:
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
-            - Header=Service-Type, user
+            - Path=/user/**
+#            - Header=Service-Type, user
           filters:
             - name: AuthenticationFilter
-            - StripPrefix=0
+            - StripPrefix=1
 
         - id: order-service
           uri: lb://ORDER-SERVICE
           predicates:
-            - Header=Service-Type, order
+            - Path=/order/**
+#            - Header=Service-Type, order
+          filters:
+            - name: AuthenticationFilter
+            - StripPrefix=1
 
         - id: item-service
           uri: lb://ITEM-SERVICE
           predicates:
-            - Header=Service-Type, item
+            - Path=/item/**
+#            - Header=Service-Type, item
+          filters:
+            - name: AuthenticationFilter
+            - StripPrefix=1
+
   graphql:
     graphiql:
       enabled: true
