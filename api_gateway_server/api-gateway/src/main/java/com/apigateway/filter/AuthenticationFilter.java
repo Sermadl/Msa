@@ -14,6 +14,7 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Component
 @Slf4j
@@ -22,9 +23,16 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
     private final WebClient webClient;
 
     private static final List<String> EXCLUDED = List.of(
-            "/login",
-            "/register",
-            "/getAllItems"
+            "/user/login",
+            "/user/register",
+            "/item/list",
+            "/user/validation",
+            "/item/list"
+    );
+
+    private static final List<Pattern> EXCLUDED_PATTERNS = List.of(
+            Pattern.compile("^/item/\\d+$"),
+            Pattern.compile("^/item/list/\\d+$")
     );
 
     public AuthenticationFilter(WebClient.Builder webClient) {
@@ -41,7 +49,17 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     // 특정 url은 인증 제외
     private boolean isExcluded(String requestPath) {
-        return EXCLUDED.stream().anyMatch(requestPath::startsWith);
+        if (EXCLUDED.stream().anyMatch(requestPath::startsWith)) {
+            log.info("Excluded fixed path: {}", requestPath);
+            return true;
+        }
+
+        if (EXCLUDED_PATTERNS.stream().anyMatch(pattern -> pattern.matcher(requestPath).matches())) {
+            log.info("Excluded dynamic path: {}", requestPath);
+            return true;
+        }
+
+        return false;
     }
 
     // JWT 검증을 위해 User Server와 통신
