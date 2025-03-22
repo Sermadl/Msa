@@ -29,23 +29,25 @@ public class AggregationController {
     private final ItemServiceClient itemServiceClient;
 
     @GetMapping("/my-page")
-    public Mono<List<ItemResponse>> getMyPage(ServerWebExchange e) {
+    public Flux<ItemResponse> getMyPage(ServerWebExchange e) {
 
+        // 사용자 인증
         ValidTokenResponse response = userServiceClient.tokenValidation(e);
 
         log.info("User Info: {}", response.getId());
         log.info("{}", response.getRole());
         log.info("{}", response.getUsername());
 
-        Mono<List<OrderResponse>> orderResponses = orderServiceClient.getPurchaseList(response.getId());
+        // 로그인 된 사용자의 주문 내역 불러오기
+        // Todo
+        //  최근 주문 내역으로 불러와야할듯?
+        Flux<OrderResponse> orderResponses = orderServiceClient.getPurchaseList(response.getId());
 
-        // 3️⃣ 주문 목록에서 상품 ID만 추출 후, 상품 정보 조회
+        // 주문 목록에서 상품 ID만 추출 후, 상품 정보 조회
         return orderResponses
-                .flatMapMany(Flux::fromIterable)
                 .flatMap(order -> Flux.fromIterable(order.getOrderItemResponses()))
                 .map(OrderItemResponse::getItemId)
                 .distinct() // 중복된 아이템 제거
-                .flatMap(itemServiceClient::getItem) // 각 아이템 정보 조회
-                .collectList();
+                .flatMap(itemServiceClient::getItem); // 각 아이템 정보 조회
     }
 }

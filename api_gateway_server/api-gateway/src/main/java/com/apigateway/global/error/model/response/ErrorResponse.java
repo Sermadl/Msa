@@ -1,38 +1,44 @@
 package com.apigateway.global.error.model.response;
 
 import com.apigateway.global.error.model.CustomException;
+import lombok.Builder;
 import lombok.Getter;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.support.WebExchangeBindException;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.UUID;
 
 @Getter
+@Builder
 public class ErrorResponse {
     private final String trackingId;
-    private final String timestamp;
-    private final HttpStatus status;
+    private final LocalDateTime timestamp;
+    private final int status;
     private final String code;
-    private final List<Object> message;
+    private final String message;
 
-    public ErrorResponse(MessageSource messageSource, Locale locale, CustomException e) {
-        this.timestamp = LocalDateTime.now().toString();
-        this.trackingId = UUID.randomUUID().toString();
-        this.status = e.getStatus();
-        this.code = e.getCode();
-        this.message = e.getMessages(messageSource, locale);
+    public static ErrorResponse of(CustomException e, MessageSource messageSource, Locale locale) {
+        return ErrorResponse.builder()
+                .trackingId(UUID.randomUUID().toString())
+                .timestamp(LocalDateTime.now())
+                .status(e.getStatus().value())
+                .code(e.getCode())
+                .message(e.getLocalizedMessage(messageSource, locale))
+                .build();
     }
 
-    public ErrorResponse(MessageSource messageSource, Locale locale,
-                            MethodArgumentNotValidException e) {
-        this.timestamp = LocalDateTime.now().toString();
-        this.trackingId = UUID.randomUUID().toString();
-        this.status = HttpStatus.resolve(e.getStatusCode().value());
-        this.code = e.getClass().getSimpleName();
-        this.message = List.of(e.getDetailMessageArguments(messageSource, locale));
+    public static ErrorResponse of(WebExchangeBindException e,
+                                   MessageSource messageSource, Locale locale) {
+        return ErrorResponse.builder()
+                .trackingId(UUID.randomUUID().toString())
+                .timestamp(LocalDateTime.now())
+                .status(e.getStatusCode().value())
+                .code(e.getClass().getSimpleName())
+                .message(Arrays.toString(e.getDetailMessageArguments(messageSource, locale)))
+                .build();
     }
 }
