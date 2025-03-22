@@ -10,55 +10,31 @@ import java.util.Objects;
 
 @Getter
 public class CustomException extends RuntimeException {
-    private final HttpStatus status;
-    private final String messageId;
-    private final Object[] arguments;
-    private String customMessage = null;
 
-    public CustomException(HttpStatus status, String messageId, Object... arguments) {
-        super(formatMessage(messageId, arguments));
-        this.status = status;
-        this.messageId = messageId;
-        this.arguments = arguments;
+    private final ErrorCode errorCode;
+    private final Object[] args;
+
+    public CustomException(ErrorCode errorCode, Object... args) {
+        super(errorCode.getMessage());
+        this.errorCode = errorCode;
+        this.args = args;
     }
 
-    public CustomException(Throwable cause, HttpStatus status, String messageId, Object... arguments) {
-        super(formatMessage(messageId, arguments), cause);
-        this.status = status;
-        this.messageId = messageId;
-        this.arguments = arguments;
+    public CustomException(Throwable e, ErrorCode errorCode, Object... args) {
+        super(e.getMessage());
+        this.errorCode = errorCode;
+        this.args = args;
     }
 
-    public List<Object> getMessages(MessageSource messageSource, Locale locale) {
-        return List.of(Objects.requireNonNullElseGet(customMessage,
-                () -> getDefaultMessage(messageSource, locale)));
-    }
-
-    public String getDefaultMessage(MessageSource messageSource, Locale locale) {
-        return messageSource.getMessage(messageId, arguments, locale);
+    public HttpStatus getStatus() {
+        return errorCode.getStatus();
     }
 
     public String getCode() {
-        return getClass().getSimpleName();
+        return errorCode.name();
     }
 
-    public static CustomException of(Exception e) {
-        return new UnknownException(e);
+    public String getLocalizedMessage(MessageSource messageSource, Locale locale) {
+        return messageSource.getMessage(errorCode.name(), args, locale);
     }
-
-    private static String formatMessage(String messageId, Object... arguments) {
-        if (arguments.length == 0) {
-            return messageId;
-        }
-
-        StringBuilder sb = new StringBuilder(messageId);
-        sb.append(": ");
-        for (int i = 0; i < arguments.length; i++) {
-            sb.append(arguments[i]);
-            if (i != arguments.length - 1) {
-                sb.append(", ");
-            }
-        }
-        return sb.toString();
-      }
 }

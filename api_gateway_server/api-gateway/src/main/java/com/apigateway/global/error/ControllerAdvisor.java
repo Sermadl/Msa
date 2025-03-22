@@ -2,17 +2,14 @@ package com.apigateway.global.error;
 
 import com.apigateway.global.error.model.CustomException;
 import com.apigateway.global.error.model.response.ErrorResponse;
-import com.apigateway.global.error.service.ErrorService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
 
 import java.util.Locale;
 
@@ -21,29 +18,21 @@ import java.util.Locale;
 @Slf4j
 public class ControllerAdvisor {
     private final MessageSource messageSource;
-    private final ErrorService errorService;
-    private boolean isEnabledTest;
 
     @ExceptionHandler
     protected ResponseEntity<ErrorResponse> handleException(CustomException e, Locale locale) {
-        ErrorResponse response = new ErrorResponse(messageSource, locale, e);
+        log.error("Exception: {}", e.getMessage(), e);
 
-        return filter(e, ResponseEntity.status(e.getStatus()).body(response));
+        ErrorResponse response = ErrorResponse.of(e, messageSource, locale);
+
+        return ResponseEntity.status(e.getStatus()).body(response);
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> methodException(MethodArgumentNotValidException e, Locale locale) {
-        ErrorResponse response = new ErrorResponse(messageSource, locale, e);
-        log.info("method");
-        return filter(e, ResponseEntity.status(e.getStatusCode()).body(response));
-    }
+    @ExceptionHandler(WebExchangeBindException.class)
+    public ResponseEntity<ErrorResponse> webClientException(WebExchangeBindException e, Locale locale) {
+        log.error("Validation Exception: {}", e.getMessage());
 
-    private ResponseEntity<ErrorResponse> filter(Throwable t, ResponseEntity<ErrorResponse> entity) {
-        ErrorResponse response = entity.getBody();
-        if (isEnabledTest && response != null) {
-            errorService.logError(response.getTrackingId(), t, response);
-        }
-        return entity;
+        ErrorResponse response = ErrorResponse.of(e, messageSource, locale);
+        return ResponseEntity.badRequest().body(response);
     }
 }
