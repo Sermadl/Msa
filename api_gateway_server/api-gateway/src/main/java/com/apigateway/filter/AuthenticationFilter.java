@@ -8,6 +8,7 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
@@ -79,12 +80,17 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 .bodyToMono(ValidTokenResponse.class)
                 .flatMap(response -> {
                     if(response.isValid()) {
+                        // 유저 정보를 담은 새로운 요청으로 교체
+                        ServerHttpRequest newRequest = exchange.getRequest().mutate()
+                                .header("x-user-id", String.valueOf(response.getId()))
+                                .header("x-user-role", String.valueOf(response.getRole()))
+                                .build();
 
-                        log.info("Valid Response");
+                        ServerWebExchange newExchange = exchange.mutate()
+                                .request(newRequest)
+                                .build();
 
-                        exchange.getAttributes().put("userInfo", response);
-
-                        return chain.filter(exchange);
+                        return chain.filter(newExchange);
                     } else {
 
                         log.info("Invalid Response");
