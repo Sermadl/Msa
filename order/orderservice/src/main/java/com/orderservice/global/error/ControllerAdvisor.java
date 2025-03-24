@@ -1,7 +1,7 @@
 package com.orderservice.global.error;
 
-import com.userserver.global.error.model.CustomException;
-import com.userserver.global.error.model.response.ErrorResponse;
+import com.orderservice.global.error.model.CustomException;
+import com.orderservice.global.error.model.response.ErrorResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -27,7 +27,6 @@ public class CustomException extends RuntimeException {
     public static CustomException of(Exception ex) {
         return new UnknownException(ex);
     }
-
     public HttpStatus getStatus() {
         return errorCode.getStatus();
     }

@@ -1,6 +1,6 @@
 package com.orderservice.global.error.model.response;
 
-import com.userserver.global.error.model.CustomException;
+import com.orderservice.global.error.model.CustomException;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.context.MessageSource;

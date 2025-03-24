@@ -5,6 +5,7 @@ import com.orderservice.controller.dto.request.PurchaseRequest;
 import com.orderservice.controller.dto.response.OrderItemResponse;
 import com.orderservice.controller.dto.response.OrderResponse;
 import com.orderservice.global.kafka.KafkaProducer;
+import com.orderservice.global.util.error.HasNoAuthorityException;
 import com.orderservice.model.entity.OrderItem;
 import com.orderservice.model.entity.Orders;
 import com.orderservice.repository.OrderItemRepository;
@@ -30,9 +31,24 @@ public class OrderService {
         return getOrderResponseList(orders);
     }
 
-    public OrderResponse getOrder(Long id) {
+    public OrderResponse getUserOrder(Long userId, Long id) {
         Orders order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        if (!order.getCustomerId().equals(userId)) {
+            throw new HasNoAuthorityException();
+        }
+
+        return getOrderResponse(order);
+    }
+
+    public OrderResponse getSellerOrder(Long sellerId, Long id) {
+        Orders order = orderRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        if (!order.getSellerId().equals(sellerId)) {
+            throw new HasNoAuthorityException();
+        }
 
         return getOrderResponse(order);
     }
@@ -43,11 +59,28 @@ public class OrderService {
         return getOrderResponseList(orders);
     }
 
-    public OrderResponse register(PurchaseRequest request) {
+    public List<OrderResponse> getOrderBySellerId(Long sellerId) {
+        List<Orders> orders = orderRepository.findBySellerId(sellerId);
+
+        return getOrderResponseList(orders);
+    }
+
+    public List<OrderResponse> getOrderBySellerIdAndItemId(Long sellerId, Long itemId) {
+        List<OrderItem> orderItems = orderItemRepository.findByItemId(itemId);
+
+        List<Orders> orders = orderItems.stream()
+                .map(OrderItem::getOrder)
+                .filter(order -> order.getSellerId().equals(sellerId))
+                .toList();
+
+        return getOrderResponseList(orders);
+    }
+
+    public OrderResponse register(PurchaseRequest request, Long userId) {
         List<PurchaseItemRequest> itemRequests = request.getItemList();
 
         Orders order = new Orders(
-                request.getCustomerId(),
+                userId,
                 request.getTotalPrice(),
                 request.getAddress(),
                 request.getDescription()

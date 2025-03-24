@@ -9,7 +9,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class PurchaseRequest {
-    private Long customerId;
     private String address;
     private String description;
     private List<PurchaseItemRequest> itemList;
