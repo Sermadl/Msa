@@ -9,9 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.ArrayList;
 import java.util.Collection;
 
+@Getter
 @AllArgsConstructor
 public class JwtAuthentication implements Authentication {
-    @Getter
     private Long userId;
     private UserRole userRole;
 

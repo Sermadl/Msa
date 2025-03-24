@@ -26,8 +26,6 @@ public class ErrorHandleFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException {
-//        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(request);
-//        ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(response);
 
         try {
             filterChain.doFilter(request, response);
@@ -40,15 +38,15 @@ public class ErrorHandleFilter extends OncePerRequestFilter {
 
     private void writeErrorResponse(HttpServletResponse response, Locale locale,
                                     CustomException ex) throws IOException {
-        ErrorResponse dto = new ErrorResponse(messageSource, locale, ex);
+        ErrorResponse dto = ErrorResponse.of(ex, messageSource, locale);
         log.error("A problem has occurred in filter: [id={}]", dto.getTrackingId(), ex);
         writeResponse(response, dto, ex.getStatus().value());
     }
 
     private void writeUnexpectedErrorResponse(HttpServletResponse response, Locale locale,
                                               Exception ex) throws IOException {
-        ErrorResponse dto = new ErrorResponse(messageSource, locale,
-                CustomException.of(ex));
+        ErrorResponse dto = ErrorResponse.of(CustomException.of(ex),
+                messageSource, locale);
         log.error("Unexpected exception has occurred in filter: [id={}]", dto.getTrackingId(), ex);
         writeResponse(response, dto, 500);
     }
