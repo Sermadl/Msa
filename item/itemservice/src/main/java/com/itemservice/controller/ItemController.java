@@ -2,6 +2,8 @@ package com.itemservice.controller;
 
 import com.itemservice.controller.dto.request.ItemRegisterRequest;
 import com.itemservice.controller.dto.response.ItemResponse;
+import com.itemservice.global.util.RoleCheck;
+import com.itemservice.global.util.UserRole;
 import com.itemservice.service.ItemService;
 import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
@@ -18,18 +20,47 @@ import java.util.List;
 public class ItemController {
     private final ItemService itemService;
 
+    /** [권한 제한 없음]
+     * 모든 상품 정보 조회
+     * @return 상품 정보 리스트
+     */
     @GetMapping("/list")
     public ResponseEntity<List<ItemResponse>> getAllItems() {
         return ResponseEntity.ok(itemService.getAll());
     }
 
+    /** [권한 제한 없음]
+     * Item Id로 상세 상품 정보 조회
+     * @param itemId 조회할 상품 Item Id
+     * @return 상품 정보
+     */
     @GetMapping("/{itemId}")
-    public ResponseEntity<ItemResponse> getItemById(@PathVariable("itemId") Long itemId) {
+    public ResponseEntity<ItemResponse> getItemById(
+            @PathVariable("itemId") Long itemId
+    ) {
         return ResponseEntity.ok(itemService.getItem(itemId));
     }
 
+    /** [판매자]
+     * 상품 등록
+     * @param request 상품 등록 Request
+     * @param userId 로그인 된 사용자 User Id
+     * @param role 로그인 된 사용자 Role
+     * @return 등록된 상품 정보
+     */
     @PostMapping("/register")
-    public ResponseEntity<ItemResponse> registerItem(@RequestBody ItemRegisterRequest request) {
-        return ResponseEntity.ok(itemService.register(request));
+    public ResponseEntity<ItemResponse> registerItem(
+            @RequestBody ItemRegisterRequest request,
+            @RequestHeader("x-user-id") Long userId,
+            @RequestHeader("x-user-role") UserRole role
+    ) {
+        RoleCheck.isSeller(role);
+
+        return ResponseEntity.ok(
+                itemService.register(
+                        request,
+                        userId
+                )
+        );
     }
 }

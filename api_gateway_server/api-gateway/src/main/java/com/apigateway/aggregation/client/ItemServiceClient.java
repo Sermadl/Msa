@@ -2,6 +2,7 @@ package com.apigateway.aggregation.client;
 
 import com.apigateway.aggregation.client.dto.item.request.ItemRegisterRequest;
 import com.apigateway.aggregation.client.dto.item.response.ItemResponse;
+import com.apigateway.aggregation.model.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,10 @@ public class ItemServiceClient {
 
     private final WebClient.Builder webClientBuilder;
 
+    /** [권한 제한 없음]
+     * 모든 상품 정보 조회
+     * @return 상품 정보 리스트
+     */
     public Flux<ItemResponse> getAllItems() {
         return webClientBuilder.build()
                 .get()
@@ -24,7 +29,12 @@ public class ItemServiceClient {
                 .bodyToFlux(ItemResponse.class);
     }
 
-    public Mono<ItemResponse> getItem(Long itemId) {
+    /** [권한 제한 없음]
+     * Item Id로 상세 상품 정보 조회
+     * @param itemId 조회할 상품 Item Id
+     * @return 상품 정보
+     */
+    public Mono<ItemResponse> getItemById(Long itemId) {
         return webClientBuilder.build()
                 .get()
                 .uri("http://ITEM-SERVICE/{itemId}", itemId)
@@ -32,10 +42,21 @@ public class ItemServiceClient {
                 .bodyToMono(ItemResponse.class);
     }
 
-    public Mono<ItemResponse> registerItem(ItemRegisterRequest request) {
+    /** [판매자]
+     * 상품 등록
+     * @param request 상품 등록 Request
+     * @param userId 로그인 된 사용자 User Id
+     * @param role 로그인 된 사용자 Role
+     * @return 등록된 상품 정보
+     */
+    public Mono<ItemResponse> registerItem(ItemRegisterRequest request,
+                                           Long userId,
+                                           UserRole role) {
         return webClientBuilder.build()
                 .post()
                 .uri("http://ITEM-SERVICE/register")
+                .header("x-user-id", String.valueOf(userId))
+                .header("x-user-role", String.valueOf(role))
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(ItemResponse.class);

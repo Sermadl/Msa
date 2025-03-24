@@ -7,18 +7,12 @@ import com.apigateway.aggregation.client.dto.item.response.ItemResponse;
 import com.apigateway.aggregation.client.dto.order.response.OrderItemResponse;
 import com.apigateway.aggregation.client.dto.order.response.OrderResponse;
 import com.apigateway.aggregation.client.dto.user.response.ValidTokenResponse;
-import com.apigateway.aggregation.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -51,6 +45,6 @@ public class AggregationController {
                 .flatMap(order -> Flux.fromIterable(order.getOrderItemResponses()))
                 .map(OrderItemResponse::getItemId)
                 .distinct() // 중복된 아이템 제거
-                .flatMap(itemServiceClient::getItem); // 각 아이템 정보 조회
+                .flatMap(itemServiceClient::getItemById); // 각 아이템 정보 조회
     }
 }

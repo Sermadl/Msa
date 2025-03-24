@@ -12,5 +12,4 @@ public class ItemRegisterRequest {
     private String description;
     private int quantity;
     private BigDecimal price;
-    private Long sellerId;
 }
