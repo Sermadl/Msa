@@ -25,4 +25,10 @@ public class User {
         this.email = email;
         this.phone = phone;
     }
+
+    public void update(String username, String email, String phone) {
+        this.username = username;
+        this.email = email;
+        this.phone = phone;
+    }
 }

@@ -2,9 +2,12 @@ package com.userserver.user.service;
 
 import com.userserver.user.controller.dto.request.RegisterUserRequest;
 import com.userserver.global.kafka.KafkaProducer;
+import com.userserver.user.controller.dto.request.UserUpdateRequest;
 import com.userserver.user.controller.dto.response.UserInfoResponse;
+import com.userserver.user.exception.UserNotFoundException;
 import com.userserver.user.model.entity.User;
 import com.userserver.user.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,6 +50,20 @@ public class UserService {
         );
     }
 
+    @Transactional
+    public UserInfoResponse updateUser(Long userId, UserUpdateRequest request) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
+        user.update(
+                request.getUsername(),
+                request.getEmail(),
+                request.getPhone()
+        );
+
+        return getUserInfo(user);
+    }
+
     private UserInfoResponse getUserInfo(User user) {
         return new UserInfoResponse(
                 user.getId(),
@@ -66,4 +83,5 @@ public class UserService {
                 )
         ).toList();
     }
+
 }
