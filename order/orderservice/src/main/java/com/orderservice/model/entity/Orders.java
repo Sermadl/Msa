@@ -21,7 +21,6 @@ public class Orders extends BaseEntity {
     @Id
     private String id;
     private Long customerId;
-    private Long sellerId;
     private BigDecimal totalPrice;
     private String address;
     private String description;

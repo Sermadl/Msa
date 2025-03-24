@@ -4,17 +4,19 @@ import com.orderservice.controller.dto.request.PurchaseItemRequest;
 import com.orderservice.controller.dto.request.PurchaseRequest;
 import com.orderservice.controller.dto.response.OrderItemResponse;
 import com.orderservice.controller.dto.response.OrderResponse;
+import com.orderservice.controller.dto.response.OrderSellerResponse;
 import com.orderservice.global.kafka.KafkaProducer;
+import com.orderservice.global.util.UserRole;
 import com.orderservice.global.util.error.HasNoAuthorityException;
 import com.orderservice.model.entity.OrderItem;
 import com.orderservice.model.entity.Orders;
 import com.orderservice.repository.OrderItemRepository;
 import com.orderservice.repository.OrderRepository;
+import com.orderservice.service.error.OrderItemNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -31,26 +33,27 @@ public class OrderService {
         return getOrderResponseList(orders);
     }
 
-    public OrderResponse getUserOrder(Long userId, Long id) {
+    public OrderResponse getUserOrder(Long userId, Long id, UserRole role) {
         Orders order = orderRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Order not found"));
 
-        if (!order.getCustomerId().equals(userId)) {
+        if (!order.getCustomerId().equals(userId) && !role.isAdmin()) {
             throw new HasNoAuthorityException();
         }
 
         return getOrderResponse(order);
     }
 
-    public OrderResponse getSellerOrder(Long sellerId, Long id) {
-        Orders order = orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+    public OrderSellerResponse getSellerOrder(Long sellerId, String orderItemId, UserRole role) {
+        OrderItem order = orderItemRepository.findById(orderItemId)
+                .orElseThrow(OrderItemNotFoundException::new);
 
-        if (!order.getSellerId().equals(sellerId)) {
+        if (!order.getSellerId().equals(sellerId) && !role.isAdmin()) {
+            log.info(String.valueOf(order.getSellerId()));
             throw new HasNoAuthorityException();
         }
 
-        return getOrderResponse(order);
+        return getOrderSellerResponse(order);
     }
 
     public List<OrderResponse> getOrderByCustomerId(Long customerId) {
@@ -59,21 +62,20 @@ public class OrderService {
         return getOrderResponseList(orders);
     }
 
-    public List<OrderResponse> getOrderBySellerId(Long sellerId) {
-        List<Orders> orders = orderRepository.findBySellerId(sellerId);
+    public List<OrderSellerResponse> getOrderBySellerId(Long sellerId) {
+        List<OrderItem> orders = orderItemRepository.findBySellerId(sellerId);
 
-        return getOrderResponseList(orders);
+        return getOrderSellerList(orders);
     }
 
-    public List<OrderResponse> getOrderBySellerIdAndItemId(Long sellerId, Long itemId) {
-        List<OrderItem> orderItems = orderItemRepository.findByItemId(itemId);
+    public List<OrderSellerResponse> getOrderBySellerIdAndItemId(Long sellerId, UserRole role, Long itemId) {
+        List<OrderItem> orders = orderItemRepository.findByItemId(itemId);
 
-        List<Orders> orders = orderItems.stream()
-                .map(OrderItem::getOrder)
-                .filter(order -> order.getSellerId().equals(sellerId))
-                .toList();
+        if (!orders.isEmpty() && !orders.get(0).getSellerId().equals(sellerId) && !role.isAdmin()) {
+            throw new HasNoAuthorityException();
+        }
 
-        return getOrderResponseList(orders);
+        return getOrderSellerList(orders);
     }
 
     public OrderResponse register(PurchaseRequest request, Long userId) {
@@ -100,6 +102,7 @@ public class OrderService {
                     OrderItem orderItem = new OrderItem(
                             order,
                             request.getItemId(),
+                            request.getSellerId(),
                             request.getName(),
                             request.getQuantity(),
                             request.getPrice()
@@ -154,5 +157,40 @@ public class OrderService {
                         orderItem.getArrivalTime()
                 )
         ).toList();
+    }
+
+    private OrderSellerResponse getOrderSellerResponse(OrderItem orderItem) {
+        Orders order = orderItem.getOrder();
+
+        return new OrderSellerResponse(
+                orderItem.getId(),
+                order.getCreatedAt(),
+                order.getCustomerId(),
+                order.getAddress(),
+                order.getDescription(),
+                orderItem.getPrice(),
+                orderItem.getQuantity(),
+                orderItem.getStatus(),
+                orderItem.getArrivalTime()
+        );
+    }
+    private List<OrderSellerResponse> getOrderSellerList(List<OrderItem> orderItems) {
+        return orderItems.stream()
+                .map(orderItem -> {
+                    Orders order = orderItem.getOrder();
+
+                    return new OrderSellerResponse(
+                        orderItem.getId(),
+                        order.getCreatedAt(),
+                        order.getCustomerId(),
+                        order.getAddress(),
+                        order.getDescription(),
+                        orderItem.getPrice(),
+                        orderItem.getQuantity(),
+                        orderItem.getStatus(),
+                        orderItem.getArrivalTime()
+                    );
+                })
+                .toList();
     }
 }
