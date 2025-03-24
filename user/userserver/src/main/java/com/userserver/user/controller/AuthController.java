@@ -2,7 +2,6 @@ package com.userserver.user.controller;
 
 import com.userserver.global.auth.jwt.JwtAuthentication;
 import com.userserver.user.controller.dto.request.LoginRequest;
-import com.userserver.user.controller.dto.request.ValidTokenRequest;
 import com.userserver.user.controller.dto.response.LoginResponse;
 import com.userserver.user.controller.dto.response.ValidTokenResponse;
 import com.userserver.user.service.AuthService;

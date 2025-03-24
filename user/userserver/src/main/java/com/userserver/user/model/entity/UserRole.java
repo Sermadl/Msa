@@ -13,17 +13,18 @@ public enum UserRole {
     GUEST("GUEST"),
     USER("USER"),
     SELLER("SELLER"),
-    ADMIN(combine("ADMIN", "USER", "SELLER"));
+    ADMIN("ADMIN");
 
-    @JsonValue
     private final String name;
 
     UserRole(String name) {
         this.name = name;
     }
 
-    public static String combine(String... names) {
-        return String.join(",", names);
+    // 특정 역할을 포함하는지 확인하는 메서드
+    public boolean includes(UserRole required) {
+        if (this == ADMIN) return true; // ADMIN은 모든 권한을 포함
+        return this == required;
     }
 
     private static final Map<String, UserRole> BY_LABEL =
@@ -43,15 +44,5 @@ public enum UserRole {
 
     public boolean isUser() {
         return this == USER;
-    }
-
-    @JsonCreator
-    public static UserRole from(String val) {
-        for (UserRole role : UserRole.values()) {
-            if (role.name().equals(val)) {
-                return role;
-            }
-        }
-        return null;
     }
 }
