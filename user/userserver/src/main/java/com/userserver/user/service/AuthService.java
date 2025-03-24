@@ -3,7 +3,6 @@ package com.userserver.user.service;
 import com.userserver.global.auth.jwt.JwtProvider;
 import com.userserver.global.auth.jwt.JwtToken;
 import com.userserver.user.controller.dto.request.LoginRequest;
-import com.userserver.user.controller.dto.request.ValidTokenRequest;
 import com.userserver.user.controller.dto.response.LoginResponse;
 import com.userserver.user.controller.dto.response.ValidTokenResponse;
 import com.userserver.user.exception.IncorrectPassword;

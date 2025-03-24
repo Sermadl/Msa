@@ -13,8 +13,8 @@ public enum ErrorCode {
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN"),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN_EXPIRED"),
     INCORRECT_PASSWORD(HttpStatus.BAD_REQUEST, "INCORRECT_PASSWORD"),
-    HAS_NO_AUTHORITY(HttpStatus.UNAUTHORIZED, "HAS_NO_AUTHORITY"),
-    ADMIN_ONLY(HttpStatus.FORBIDDEN, "ADMIN_ONLY"),;
+    HAS_NO_AUTHORITY(HttpStatus.FORBIDDEN, "HAS_NO_AUTHORITY"),
+    ADMIN_ONLY(HttpStatus.FORBIDDEN, "ADMIN_ONLY");
 
     private final HttpStatus status;
     private final String message;

@@ -52,7 +52,7 @@ public class UserController {
     public ResponseEntity<UserInfoResponse> getUserById(@PathVariable("userId") Long targetId,
                                                         @RequestHeader("x-user-id") Long userId,
                                                         @RequestHeader("x-user-role") UserRole role) {
-        log.info("user id({}) accessed to find user", userId);
+        log.info("user id({}) accessed to find user({})", userId, targetId);
         RoleCheck.isAdmin(role);
 
         return ResponseEntity.ok(userService.getUser(targetId));
@@ -67,7 +67,7 @@ public class UserController {
     @GetMapping("/my")
     public ResponseEntity<UserInfoResponse> getMyInfo(@RequestHeader("x-user-id") Long userId,
                                                       @RequestHeader("x-user-role") UserRole role) {
-        log.info("user id({}) accessed to find user", userId);
+        log.info("user id({}) accessed to check my info", userId);
         RoleCheck.isUser(role);
 
         return ResponseEntity.ok(userService.getUser(userId));
