@@ -9,11 +9,12 @@ import java.time.LocalDateTime;
 
 @Getter
 @AllArgsConstructor
-public class OrderItemResponse {
+public class OrderSellerResponse {
     private String id;
-    private String orderId;
-    private Long itemId;
-    private String name;
+    private LocalDateTime orderDate;
+    private Long customerId;
+    private String address;
+    private String description;
     private BigDecimal price;
     private int quantity;
     private Status status;

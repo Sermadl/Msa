@@ -2,6 +2,7 @@ package com.orderservice.controller;
 
 import com.orderservice.controller.dto.request.PurchaseRequest;
 import com.orderservice.controller.dto.response.OrderResponse;
+import com.orderservice.controller.dto.response.OrderSellerResponse;
 import com.orderservice.global.util.RoleCheck;
 import com.orderservice.global.util.UserRole;
 import com.orderservice.service.OrderService;
@@ -54,7 +55,7 @@ public class OrderController {
         RoleCheck.isUser(role);
 
         return ResponseEntity.ok(
-                orderService.getUserOrder(userId, orderId)
+                orderService.getUserOrder(userId, orderId, role)
         );
     }
 
@@ -65,16 +66,16 @@ public class OrderController {
      * @param role 로그인 된 사용자 Role
      * @return 주문 정보
      */
-    @GetMapping("/seller/{orderId}")
-    public ResponseEntity<OrderResponse> findSellerOrder(
-            @PathVariable("orderId") Long orderId,
+    @GetMapping("/seller/{orderItemId}")
+    public ResponseEntity<OrderSellerResponse> findSellerOrder(
+            @PathVariable("orderItemId") String orderId,
             @RequestHeader("x-user-id") Long userId,
             @RequestHeader("x-user-role") UserRole role
     ) {
-        RoleCheck.isUser(role);
+        RoleCheck.isSeller(role);
 
         return ResponseEntity.ok(
-                orderService.getSellerOrder(userId, orderId)
+                orderService.getSellerOrder(userId, orderId, role)
         );
     }
 
@@ -103,7 +104,7 @@ public class OrderController {
      * @return 주문 정보 리스트
      */
     @GetMapping("/seller/myList")
-    public ResponseEntity<List<OrderResponse>> getPurchaseListForSeller(
+    public ResponseEntity<List<OrderSellerResponse>> getPurchaseListForSeller(
             @RequestHeader("x-user-id") Long sellerId,
             @RequestHeader("x-user-role") UserRole role
     ) {
@@ -122,7 +123,7 @@ public class OrderController {
      * @return 주문 정보 리스트
      */
     @GetMapping("/seller/myList/{itemId}")
-    public ResponseEntity<List<OrderResponse>> getPurchaseListByItem(
+    public ResponseEntity<List<OrderSellerResponse>> getPurchaseListByItem(
             @PathVariable("itemId") Long itemId,
             @RequestHeader("x-user-id") Long sellerId,
             @RequestHeader("x-user-role") UserRole role
@@ -130,7 +131,7 @@ public class OrderController {
         RoleCheck.isSeller(role);
 
         return ResponseEntity.ok(
-                orderService.getOrderBySellerIdAndItemId(sellerId, itemId)
+                orderService.getOrderBySellerIdAndItemId(sellerId, role, itemId)
         );
     }
 

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Random;
 
 @Entity
 @Getter
@@ -16,8 +17,7 @@ import java.time.LocalDateTime;
 public class OrderItem extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @ManyToOne
     private Orders order;
@@ -25,18 +25,28 @@ public class OrderItem extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status;
     private Long itemId;
+    private Long sellerId;
     private String name;
     private int quantity;
     private BigDecimal price;
     private LocalDateTime arrivalTime;
 
-    public OrderItem(Orders order, Long itemId, String name, int quantity, BigDecimal price) {
+    public OrderItem(Orders order, Long itemId, Long sellerId, String name, int quantity, BigDecimal price) {
+        this.id = generateShortId();
         this.order = order;
         this.status = Status.PENDING;
         this.itemId = itemId;
+        this.sellerId = sellerId;
         this.name = name;
         this.quantity = quantity;
         this.price = price;
         this.arrivalTime = LocalDateTime.now().plusDays(1);
     }
+
+    public String generateShortId() {
+        String timePart = String.valueOf(System.currentTimeMillis()).substring(8); // 시간 기반 3자리
+        int randomPart = new Random().nextInt(90) + 10; // 10~99 두 자리 랜덤
+        return timePart + randomPart;
+    }
+
 }
