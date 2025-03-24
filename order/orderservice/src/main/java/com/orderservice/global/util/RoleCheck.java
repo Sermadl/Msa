@@ -6,13 +6,13 @@ import com.orderservice.global.util.error.HasNoAuthorityException;
 
 public class RoleCheck {
     public static void isUser(UserRole role) {
-        if (!role.isUser()) {
+        if (!role.includes(UserRole.USER)) {
             throw new HasNoAuthorityException();
         }
     }
 
     public static void isSeller(UserRole role) {
-        if (!role.isSeller()) {
+        if (!role.includes(UserRole.SELLER)) {
             throw new HasNoAuthorityException();
         }
     }

@@ -14,6 +14,7 @@ public class OrderItem{
     private Long id;
     private String orderId;
     private Long itemId;
+    private String name;
     private BigDecimal price;
     private int quantity;
     private Status status;
