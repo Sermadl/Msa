@@ -22,13 +22,13 @@ public class ItemService {
         return getAllItemResponse(items);
     }
 
-    public ItemResponse register(ItemRegisterRequest request) {
+    public ItemResponse register(ItemRegisterRequest request, Long sellerId) {
         Item item = new Item(
                 request.getName(),
                 request.getDescription(),
                 request.getQuantity(),
                 request.getPrice(),
-                request.getSellerId()
+                sellerId
         );
 
         return getItemResponse(
