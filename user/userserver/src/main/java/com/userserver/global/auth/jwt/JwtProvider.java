@@ -7,12 +7,14 @@ import com.userserver.global.auth.jwt.exception.TokenExpiredException;
 import com.userserver.user.model.entity.User;
 import com.userserver.user.model.entity.UserRole;
 import io.jsonwebtoken.*;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpCookie;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 
 import java.util.Date;
 import java.util.UUID;
@@ -163,26 +165,26 @@ public class JwtProvider implements AuthenticationProvider {
         return userId;
     }
 
-    public String getAccessTokenFromHeader(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equalsIgnoreCase("access-token")) {
-                    return cookie.getValue();
-                }
-            }
+    public String getAccessTokenFromHeader(ServerHttpRequest request) {
+        // 1. 쿠키에서 access-token 확인
+        MultiValueMap<String, HttpCookie> cookies = request.getCookies();
+        HttpCookie cookie = cookies.getFirst("access-token");
+        if (cookie != null) {
+            return cookie.getValue();
         }
 
-        String header = request.getHeader(AUTHORIZATION);
+        // 2. Authorization 헤더에서 Bearer 토큰 추출
+        String header = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (header != null) {
-            if (!header.toLowerCase().startsWith(BEARER)) {
-                log.info("header: {}", header);
-                throw new RuntimeException();
+            if (!header.toLowerCase().startsWith("bearer ")) {
+                log.info("Invalid header format: {}", header);
+                throw new RuntimeException("Invalid Authorization header");
             }
-            return header.substring(7);
+            return header.substring(7); // "Bearer " 제거
         }
 
-        log.info("header is null!");
+        log.info("Authorization header is missing!");
         return null;
     }
+
 }
