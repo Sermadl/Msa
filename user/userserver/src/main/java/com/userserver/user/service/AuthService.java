@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 @Slf4j
@@ -23,29 +24,40 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final PasswordEncoder passwordEncoder;
 
-    public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(UserNotFoundException::new);
+    public Mono<LoginResponse> login(LoginRequest request) {
+        log.info("Login request: {}", request);
 
-        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            JwtToken token = jwtProvider.issue(user);
+        return userRepository.findByEmail(request.getEmail())
+                .switchIfEmpty(Mono.error(new UserNotFoundException()))
+                .flatMap(user -> {
+                    if(passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+                        JwtToken token = jwtProvider.issue(user);
 
-            log.info("token: {}", token.getAccessToken());
-            return new LoginResponse(token.getAccessToken(), token.getRefreshToken(), user.getUserRole());
-        } else {
-            throw new IncorrectPassword();
-        }
+                        log.info("token provided");
+
+                        return Mono.just(
+                                new LoginResponse(
+                                        token.getAccessToken(),
+                                        token.getRefreshToken(),
+                                        user.getUserRole()
+                                )
+                        );
+                    } else {
+                        return Mono.error(new IncorrectPassword());
+                    }
+                });
     }
 
-    public ValidTokenResponse validToken(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
-
-        return new ValidTokenResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail(),
-                user.getUserRole()
-        );
+    public Mono<ValidTokenResponse> validToken(Long userId) {
+        return userRepository.findById(userId)
+                .switchIfEmpty(Mono.error(new UserNotFoundException()))
+                .flatMap(user -> Mono.just(
+                        new ValidTokenResponse(
+                                user.getId(),
+                                user.getUsername(),
+                                user.getEmail(),
+                                user.getUserRole()
+                        )
+                ));
     }
 }

@@ -13,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -24,20 +26,18 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final KafkaProducer kafkaProducer;
 
-    public List<UserInfoResponse> getAll() {
-        List<User> users = userRepository.findAll();
-
-        return getAllUserInfo(users);
+    public Flux<UserInfoResponse> getAll() {
+        return userRepository.findAll()
+                .map(this::getUserInfo);
     }
 
-    public UserInfoResponse getUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        return getUserInfo(user);
+    public Mono<UserInfoResponse> getUser(Long userId) {
+        return userRepository.findById(userId)
+                .switchIfEmpty(Mono.error(new UserNotFoundException()))
+                .map(this::getUserInfo);
     }
 
-    public UserInfoResponse register(RegisterUserRequest request) {
+    public Mono<UserInfoResponse> register(RegisterUserRequest request) {
         User user = new User(
                 request.getUsername(),
                 passwordEncoder.encode(request.getPassword()),
@@ -45,24 +45,26 @@ public class UserService {
                 request.getPhone()
         );
 
-        return getUserInfo(
-                userRepository.save(user)
-        );
+        return userRepository.save(user) // Mono<User>
+                .map(this::getUserInfo); // Mono<UserInfoResponse>
+
     }
 
     @Transactional
-    public UserInfoResponse updateUser(Long userId, UserUpdateRequest request) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
-
-        user.update(
-                request.getUsername(),
-                request.getEmail(),
-                request.getPhone()
-        );
-
-        return getUserInfo(user);
+    public Mono<UserInfoResponse> updateUser(Long userId, UserUpdateRequest request) {
+        return userRepository.findById(userId)
+                .switchIfEmpty(Mono.error(new UserNotFoundException()))
+                .flatMap(user -> {
+                    user.update(
+                            request.getUsername(),
+                            request.getEmail(),
+                            request.getPhone()
+                    );
+                    return userRepository.save(user);
+                })
+                .map(this::getUserInfo); // DTO 변환
     }
+
 
     private UserInfoResponse getUserInfo(User user) {
         return new UserInfoResponse(
@@ -71,17 +73,6 @@ public class UserService {
                 user.getEmail(),
                 user.getPhone()
         );
-    }
-
-    private List<UserInfoResponse> getAllUserInfo(List<User> users) {
-        return users.stream().map(
-                user -> new UserInfoResponse(
-                        user.getId(),
-                        user.getUsername(),
-                        user.getEmail(),
-                        user.getPhone()
-                )
-        ).toList();
     }
 
 }

@@ -17,11 +17,15 @@ spring:
     discovery:
       enabled: true
 
-  jpa:
-    database-platform: org.hibernate.dialect.MariaDBDialect
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+#  jpa:
+#    database-platform: org.hibernate.dialect.MariaDBDialect
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+
+  sql:
+    init:
+      mode: always
 
   data:
     redis:

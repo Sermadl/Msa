@@ -11,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -28,7 +30,7 @@ public class UserController {
      * @return 모든 사용자 정보 리스트
      */
     @GetMapping("/list")
-    public ResponseEntity<List<UserInfoResponse>> getAllUsers(
+    public Flux<UserInfoResponse> getAllUsers(
             @RequestHeader("x-user-id") Long userId,
             @RequestHeader("x-user-role") UserRole role
     ) {
@@ -36,9 +38,7 @@ public class UserController {
 
         RoleCheck.isAdmin(role);
 
-        return ResponseEntity.ok(
-                userService.getAll()
-        );
+        return userService.getAll();
     }
 
     /** [관리자]
@@ -49,13 +49,13 @@ public class UserController {
      * @return 사용자 정보
      */
     @GetMapping("/{userId}")
-    public ResponseEntity<UserInfoResponse> getUserById(@PathVariable("userId") Long targetId,
-                                                        @RequestHeader("x-user-id") Long userId,
-                                                        @RequestHeader("x-user-role") UserRole role) {
+    public Mono<UserInfoResponse> getUserById(@PathVariable("userId") Long targetId,
+                                              @RequestHeader("x-user-id") Long userId,
+                                              @RequestHeader("x-user-role") UserRole role) {
         log.info("user id({}) accessed to find user({})", userId, targetId);
         RoleCheck.isAdmin(role);
 
-        return ResponseEntity.ok(userService.getUser(targetId));
+        return userService.getUser(targetId);
     }
 
     /** [사용자]
@@ -65,12 +65,12 @@ public class UserController {
      * @return 로그인 된 사용자 정보
      */
     @GetMapping("/my")
-    public ResponseEntity<UserInfoResponse> getMyInfo(@RequestHeader("x-user-id") Long userId,
+    public Mono<UserInfoResponse> getMyInfo(@RequestHeader("x-user-id") Long userId,
                                                       @RequestHeader("x-user-role") UserRole role) {
         log.info("user id({}) accessed to check my info", userId);
         RoleCheck.isUser(role);
 
-        return ResponseEntity.ok(userService.getUser(userId));
+        return userService.getUser(userId);
     }
 
     /** [권한 제한 없음]
@@ -79,12 +79,13 @@ public class UserController {
      * @return 등록된 사용자 정보
      */
     @PostMapping("/register")
-    public ResponseEntity<UserInfoResponse> createUser(@RequestBody RegisterUserRequest request) {
+    public Mono<UserInfoResponse> createUser(@RequestBody RegisterUserRequest request) {
         log.info(request.getUsername());
         log.info(request.getPassword());
         log.info(request.getEmail());
         log.info(request.getPhone());
-        return ResponseEntity.ok(userService.register(request));
+
+        return userService.register(request);
     }
 
     /** [사용자]
@@ -93,12 +94,12 @@ public class UserController {
      * @return 수정된 사용자 정보
      */
     @PatchMapping("/update")
-    public ResponseEntity<UserInfoResponse> updateUser(@RequestBody UserUpdateRequest request,
+    public Mono<UserInfoResponse> updateUser(@RequestBody UserUpdateRequest request,
                                                         @RequestHeader("x-user-id") Long userId,
                                                         @RequestHeader("x-user-role") UserRole role) {
         log.info("user Id({}) accessed to update user", userId);
         RoleCheck.isUser(role);
 
-        return ResponseEntity.ok(userService.updateUser(userId, request));
+        return userService.updateUser(userId, request);
     }
 }
