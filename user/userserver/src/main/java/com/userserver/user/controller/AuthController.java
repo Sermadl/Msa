@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 @RestController
 @Slf4j
@@ -22,20 +23,16 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(
+    public Mono<LoginResponse> login(
             @RequestBody @Validated LoginRequest request
     ) {
-        return ResponseEntity.ok(
-                authService.login(request)
-        );
+        return authService.login(request);
     }
 
     @GetMapping("/validation")
-    public ResponseEntity<ValidTokenResponse> validate(
+    public Mono<ValidTokenResponse> validate(
             JwtAuthentication auth
     ) {
-        return ResponseEntity.ok(
-                authService.validToken(auth.getUserId())
-        );
+        return authService.validToken(auth.getUserId());
     }
 }
