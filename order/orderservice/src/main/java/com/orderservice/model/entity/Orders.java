@@ -1,22 +1,24 @@
 package com.orderservice.model.entity;
 
 import com.orderservice.global.util.BaseEntity;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Date;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 @Table
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Orders extends BaseEntity {
+public class Orders extends BaseEntity implements Persistable<String> {
 
     @Id
     private String id;
@@ -25,12 +27,16 @@ public class Orders extends BaseEntity {
     private String address;
     private String description;
 
+    @Transient
+    private boolean isNew;
+
     public Orders(Long customerId, BigDecimal totalPrice, String address, String description) {
         this.id = generateOrderNumber();
         this.customerId = customerId;
         this.totalPrice = totalPrice;
         this.address = address;
         this.description = description;
+        this.isNew = true;
     }
 
     private static String lastDate = getCurrentDate();
@@ -51,5 +57,10 @@ public class Orders extends BaseEntity {
 
     private static String getCurrentDate() {
         return new SimpleDateFormat("yyMMdd").format(new Date());
+    }
+
+    @Override
+    public boolean isNew() {
+        return isNew;
     }
 }

@@ -18,7 +18,7 @@ import java.util.Random;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderItem extends BaseEntity {
+public class OrderItem extends BaseEntity implements Persistable<String> {
 
     @Id
     private String id;
@@ -33,6 +33,9 @@ public class OrderItem extends BaseEntity {
     private BigDecimal price;
     private LocalDateTime arrivalTime;
 
+    @Transient
+    private boolean isNew;
+
     public OrderItem(String orderId, Long itemId, Long sellerId, String name, int quantity, BigDecimal price) {
         this.id = generateShortId();
         this.orderId = orderId;
@@ -43,6 +46,7 @@ public class OrderItem extends BaseEntity {
         this.quantity = quantity;
         this.price = price;
         this.arrivalTime = LocalDateTime.now().plusDays(1);
+        this.isNew = true;
     }
 
     public String generateShortId() {
@@ -51,4 +55,8 @@ public class OrderItem extends BaseEntity {
         return timePart + randomPart;
     }
 
+    @Override
+    public boolean isNew() {
+        return isNew;
+    }
 }
