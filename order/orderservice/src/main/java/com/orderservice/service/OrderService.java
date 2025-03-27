@@ -13,9 +13,12 @@ import com.orderservice.model.entity.Orders;
 import com.orderservice.repository.OrderItemRepository;
 import com.orderservice.repository.OrderRepository;
 import com.orderservice.service.error.OrderItemNotFoundException;
+import com.orderservice.service.error.OrderNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -27,80 +30,84 @@ public class OrderService {
     private final KafkaProducer kafkaProducer;
     private final OrderItemRepository orderItemRepository;
 
-    public List<OrderResponse> getAll() {
-        List<Orders> orders = orderRepository.findAll();
-
-        return getOrderResponseList(orders);
+    public Flux<OrderResponse> getAll() {
+        return orderRepository.findAll()
+                .flatMap(this::getOrderResponse);
     }
 
-    public OrderResponse getUserOrder(Long userId, Long id, UserRole role) {
-        Orders order = orderRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+    public Mono<OrderResponse> getUserOrder(Long userId, String id, UserRole role) {
+        return orderRepository.findById(id)
+                .switchIfEmpty(Mono.error(new OrderNotFoundException()))
+                .flatMap(order -> {
+                    if (!order.getCustomerId().equals(userId) && !role.isAdmin()) {
+                        return Mono.error(new HasNoAuthorityException());
+                    }
 
-        if (!order.getCustomerId().equals(userId) && !role.isAdmin()) {
-            throw new HasNoAuthorityException();
-        }
-
-        return getOrderResponse(order);
+                    return getOrderResponse(order);
+                });
     }
 
-    public OrderSellerResponse getSellerOrder(Long sellerId, String orderItemId, UserRole role) {
-        OrderItem order = orderItemRepository.findById(orderItemId)
-                .orElseThrow(OrderItemNotFoundException::new);
-
-        if (!order.getSellerId().equals(sellerId) && !role.isAdmin()) {
-            log.info(String.valueOf(order.getSellerId()));
-            throw new HasNoAuthorityException();
-        }
-
-        return getOrderSellerResponse(order);
+    public Mono<OrderSellerResponse> getSellerOrder(Long sellerId, String orderItemId, UserRole role) {
+        return orderItemRepository.findById(orderItemId)
+                .switchIfEmpty(Mono.error(new OrderItemNotFoundException()))
+                .flatMap(orderItem -> {
+                    if (!orderItem.getSellerId().equals(sellerId) && !role.isAdmin()) {
+                        log.info("user id({}) accessed to get seller({})'s orders", sellerId, orderItem.getSellerId());
+                        return Mono.error(new HasNoAuthorityException());
+                    }
+                    return getOrderSellerResponse(orderItem);
+                });
     }
 
-    public List<OrderResponse> getOrderByCustomerId(Long customerId) {
-        List<Orders> orders = orderRepository.findByCustomerId(customerId);
-
-        return getOrderResponseList(orders);
+    public Flux<OrderResponse> getOrderByCustomerId(Long customerId) {
+        return orderRepository.findByCustomerId(customerId)
+                .flatMap(this::getOrderResponse);
     }
 
-    public List<OrderSellerResponse> getOrderBySellerId(Long sellerId) {
-        List<OrderItem> orders = orderItemRepository.findBySellerId(sellerId);
-
-        return getOrderSellerList(orders);
+    public Flux<OrderSellerResponse> getOrderBySellerId(Long sellerId) {
+        return orderItemRepository.findBySellerId(sellerId)
+                .flatMap(this::getOrderSellerResponse);
     }
 
-    public List<OrderSellerResponse> getOrderBySellerIdAndItemId(Long sellerId, UserRole role, Long itemId) {
-        List<OrderItem> orders = orderItemRepository.findByItemId(itemId);
+    public Flux<OrderSellerResponse> getOrderBySellerIdAndItemId(Long sellerId, UserRole role, Long itemId) {
+        return orderItemRepository.findByItemId(itemId)
+                .collectList()
+                .flatMapMany(orders -> {
+                    if (!orders.isEmpty()
+                            && !orders.get(0).getSellerId().equals(sellerId)
+                            && !role.isAdmin()) {
+                        return Mono.error(new HasNoAuthorityException());
+                    }
 
-        if (!orders.isEmpty() && !orders.get(0).getSellerId().equals(sellerId) && !role.isAdmin()) {
-            throw new HasNoAuthorityException();
-        }
-
-        return getOrderSellerList(orders);
+                    return Flux.fromIterable(orders)
+                            .flatMap(this::getOrderSellerResponse);
+                });
     }
 
-    public OrderResponse register(PurchaseRequest request, Long userId) {
+    public Mono<OrderResponse> register(PurchaseRequest request, Long userId) {
         List<PurchaseItemRequest> itemRequests = request.getItemList();
 
-        Orders order = new Orders(
+        Orders orders = new Orders(
                 userId,
                 request.getTotalPrice(),
                 request.getAddress(),
                 request.getDescription()
         );
 
-        order = orderRepository.save(order);
-
-        registerItem(itemRequests, order);
-
-        return getOrderResponse(order);
+        return orderRepository.save(orders)
+                .doOnNext(saved -> log.info("Order saved: {}", saved.getId()))
+                .flatMap(order ->
+                    registerItem(itemRequests, order)
+                            .then(getOrderResponse(order))
+                );
     }
 
-    private void registerItem(List<PurchaseItemRequest> requests,
+    private Mono<Void> registerItem(List<PurchaseItemRequest> requests,
                               Orders order) {
-        requests.forEach(
-                request -> {
+        return Flux.fromIterable(requests)
+                .flatMap(request -> {
                     OrderItem orderItem = new OrderItem(
-                            order,
+                            order.getId(),
                             request.getItemId(),
                             request.getSellerId(),
                             request.getName(),
@@ -108,89 +115,56 @@ public class OrderService {
                             request.getPrice()
                     );
 
-                    kafkaProducer.sendDbUpdateMessage(
-                            orderItemRepository.save(orderItem)
-                    );
-                }
-        );
+                    return orderItemRepository.save(orderItem)
+                            .doOnSuccess(kafkaProducer::sendDbUpdateMessage);
+                })
+                .then();
+
     }
 
-    private List<OrderResponse> getOrderResponseList(List<Orders> orders) {
-
-        return orders.stream().map(
-                order -> new OrderResponse(
-                        order.getId(),
-                        order.getCreatedAt(),
-                        getOrderItemList(
-                                orderItemRepository.findByOrderId(order.getId())
-                        ),
-                        order.getAddress(),
-                        order.getDescription(),
-                        order.getTotalPrice()
-                )
-        ).toList();
+    private Mono<OrderResponse> getOrderResponse(Orders order) {
+         return orderItemRepository.findByOrderId(order.getId())
+                 .map(this::getOrderItemResponse)
+                 .collectList()
+                 .map(orderItems ->
+                     new OrderResponse(
+                             order.getId(),
+                             order.getCreatedAt(),
+                             orderItems,
+                             order.getAddress(),
+                             order.getDescription(),
+                             order.getTotalPrice()
+                     )
+                 );
     }
 
-    private OrderResponse getOrderResponse(Orders order) {
-        List<OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
-
-        return new OrderResponse(
-                order.getId(),
-                order.getCreatedAt(),
-                getOrderItemList(orderItems),
-                order.getAddress(),
-                order.getDescription(),
-                order.getTotalPrice()
-        );
-    }
-
-    private List<OrderItemResponse> getOrderItemList(List<OrderItem> orderItems) {
-        return orderItems.stream().map(
-                orderItem -> new OrderItemResponse(
-                        orderItem.getId(),
-                        orderItem.getOrder().getId(),
-                        orderItem.getItemId(),
-                        orderItem.getName(),
-                        orderItem.getPrice(),
-                        orderItem.getQuantity(),
-                        orderItem.getStatus(),
-                        orderItem.getArrivalTime()
-                )
-        ).toList();
-    }
-
-    private OrderSellerResponse getOrderSellerResponse(OrderItem orderItem) {
-        Orders order = orderItem.getOrder();
-
-        return new OrderSellerResponse(
+    private OrderItemResponse getOrderItemResponse(OrderItem orderItem) {
+        return new OrderItemResponse(
                 orderItem.getId(),
-                order.getCreatedAt(),
-                order.getCustomerId(),
-                order.getAddress(),
-                order.getDescription(),
+                orderItem.getOrderId(),
+                orderItem.getItemId(),
+                orderItem.getName(),
                 orderItem.getPrice(),
                 orderItem.getQuantity(),
                 orderItem.getStatus(),
                 orderItem.getArrivalTime()
         );
     }
-    private List<OrderSellerResponse> getOrderSellerList(List<OrderItem> orderItems) {
-        return orderItems.stream()
-                .map(orderItem -> {
-                    Orders order = orderItem.getOrder();
 
-                    return new OrderSellerResponse(
-                        orderItem.getId(),
-                        order.getCreatedAt(),
-                        order.getCustomerId(),
-                        order.getAddress(),
-                        order.getDescription(),
-                        orderItem.getPrice(),
-                        orderItem.getQuantity(),
-                        orderItem.getStatus(),
-                        orderItem.getArrivalTime()
-                    );
-                })
-                .toList();
+    private Mono<OrderSellerResponse> getOrderSellerResponse(OrderItem orderItem) {
+        return orderRepository.findById(orderItem.getOrderId())
+                .map(order ->
+                        new OrderSellerResponse(
+                            orderItem.getId(),
+                            order.getCreatedAt(),
+                            order.getCustomerId(),
+                            order.getAddress(),
+                            order.getDescription(),
+                            orderItem.getPrice(),
+                            orderItem.getQuantity(),
+                            orderItem.getStatus(),
+                            orderItem.getArrivalTime()
+                        )
+                );
     }
 }

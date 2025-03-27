@@ -24,7 +24,7 @@ public class CustomException extends RuntimeException {
         this.args = args;
     }
 
-    public static CustomException of(Exception ex) {
+    public static CustomException of(Throwable ex) {
         return new UnknownException(ex);
     }
     public HttpStatus getStatus() {

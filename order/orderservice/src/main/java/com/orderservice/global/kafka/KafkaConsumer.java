@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 public class KafkaConsumer {
     private final OrderRepository orderRepository;
 
-    @Transactional
     @KafkaListener(topics = "db-connection-test")
     public void processMessage(String kafkaMessage) {
         log.info("Kafka Message: ======> {}", kafkaMessage);
