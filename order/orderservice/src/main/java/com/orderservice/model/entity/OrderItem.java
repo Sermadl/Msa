@@ -5,12 +5,16 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
+import org.springframework.data.relational.core.mapping.Table;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Random;
 
-@Entity
+@Table
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,9 +23,7 @@ public class OrderItem extends BaseEntity {
     @Id
     private String id;
 
-    @ManyToOne
-    private Orders order;
-
+    private String orderId;
     @Enumerated(EnumType.STRING)
     private Status status;
     private Long itemId;
@@ -31,9 +33,9 @@ public class OrderItem extends BaseEntity {
     private BigDecimal price;
     private LocalDateTime arrivalTime;
 
-    public OrderItem(Orders order, Long itemId, Long sellerId, String name, int quantity, BigDecimal price) {
+    public OrderItem(String orderId, Long itemId, Long sellerId, String name, int quantity, BigDecimal price) {
         this.id = generateShortId();
-        this.order = order;
+        this.orderId = orderId;
         this.status = Status.PENDING;
         this.itemId = itemId;
         this.sellerId = sellerId;

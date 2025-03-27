@@ -5,12 +5,15 @@ import com.orderservice.controller.dto.response.OrderResponse;
 import com.orderservice.controller.dto.response.OrderSellerResponse;
 import com.orderservice.global.util.RoleCheck;
 import com.orderservice.global.util.UserRole;
+import com.orderservice.model.entity.Orders;
 import com.orderservice.service.OrderService;
 import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -27,16 +30,14 @@ public class OrderController {
      * @return 주문 목록
      */
     @GetMapping("/list")
-    public ResponseEntity<List<OrderResponse>> getAllOrders(
+    public Flux<OrderResponse> getAllOrders(
             @RequestHeader("x-user-id") Long userId,
             @RequestHeader("x-user-role") UserRole role
     ) {
         log.info("user id({}) accessed to get all orders", userId);
         RoleCheck.isAdmin(role);
 
-        return ResponseEntity.ok(
-                orderService.getAll()
-        );
+        return orderService.getAll();
     }
 
     /** [사용자]
@@ -47,16 +48,14 @@ public class OrderController {
      * @return 주문 정보
      */
     @GetMapping("/{orderId}")
-    public ResponseEntity<OrderResponse> findUserOrder(
-            @PathVariable("orderId") Long orderId,
+    public Mono<OrderResponse> findUserOrder(
+            @PathVariable("orderId") String orderId,
             @RequestHeader("x-user-id") Long userId,
             @RequestHeader("x-user-role") UserRole role
     ) {
         RoleCheck.isUser(role);
 
-        return ResponseEntity.ok(
-                orderService.getUserOrder(userId, orderId, role)
-        );
+        return orderService.getUserOrder(userId, orderId, role);
     }
 
     /** [판매자]
@@ -67,16 +66,14 @@ public class OrderController {
      * @return 주문 정보
      */
     @GetMapping("/seller/{orderItemId}")
-    public ResponseEntity<OrderSellerResponse> findSellerOrder(
+    public Mono<OrderSellerResponse> findSellerOrder(
             @PathVariable("orderItemId") String orderId,
             @RequestHeader("x-user-id") Long userId,
             @RequestHeader("x-user-role") UserRole role
     ) {
         RoleCheck.isSeller(role);
 
-        return ResponseEntity.ok(
-                orderService.getSellerOrder(userId, orderId, role)
-        );
+        return orderService.getSellerOrder(userId, orderId, role);
     }
 
     /** [사용자]
@@ -86,15 +83,13 @@ public class OrderController {
      * @return 주문 정보 리스트
      */
     @GetMapping("/myList")
-    public ResponseEntity<List<OrderResponse>> getMyPurchaseList(
+    public Flux<OrderResponse> getMyPurchaseList(
             @RequestHeader("x-user-id") Long userId,
             @RequestHeader("x-user-role") UserRole role
     ) {
         RoleCheck.isUser(role);
 
-        return ResponseEntity.ok(
-                orderService.getOrderByCustomerId(userId)
-        );
+        return orderService.getOrderByCustomerId(userId);
     }
 
     /** [판매자]
@@ -104,15 +99,13 @@ public class OrderController {
      * @return 주문 정보 리스트
      */
     @GetMapping("/seller/myList")
-    public ResponseEntity<List<OrderSellerResponse>> getPurchaseListForSeller(
+    public Flux<OrderSellerResponse> getPurchaseListForSeller(
             @RequestHeader("x-user-id") Long sellerId,
             @RequestHeader("x-user-role") UserRole role
     ) {
         RoleCheck.isSeller(role);
 
-        return ResponseEntity.ok(
-                orderService.getOrderBySellerId(sellerId)
-        );
+        return orderService.getOrderBySellerId(sellerId);
     }
 
     /** [판매자]
@@ -123,16 +116,14 @@ public class OrderController {
      * @return 주문 정보 리스트
      */
     @GetMapping("/seller/myList/{itemId}")
-    public ResponseEntity<List<OrderSellerResponse>> getPurchaseListByItem(
+    public Flux<OrderSellerResponse> getPurchaseListByItem(
             @PathVariable("itemId") Long itemId,
             @RequestHeader("x-user-id") Long sellerId,
             @RequestHeader("x-user-role") UserRole role
     ) {
         RoleCheck.isSeller(role);
 
-        return ResponseEntity.ok(
-                orderService.getOrderBySellerIdAndItemId(sellerId, role, itemId)
-        );
+        return orderService.getOrderBySellerIdAndItemId(sellerId, role, itemId);
     }
 
     /** [관리자]
@@ -143,7 +134,7 @@ public class OrderController {
      * @return 주문 정보 리스트
      */
     @GetMapping("/list/{customerId}")
-    public ResponseEntity<List<OrderResponse>> getUserPurchaseList(
+    public Flux<OrderResponse> getUserPurchaseList(
             @PathVariable("customerId") Long customerId,
             @RequestHeader("x-user-id") Long userId,
             @RequestHeader("x-user-role") UserRole role
@@ -151,9 +142,7 @@ public class OrderController {
         log.info("user id({}) accessed to get customer's({}) orders", userId, customerId);
         RoleCheck.isAdmin(role);
 
-        return ResponseEntity.ok(
-                orderService.getOrderByCustomerId(customerId)
-        );
+        return orderService.getOrderByCustomerId(customerId);
     }
 
     /** [사용자]
@@ -164,14 +153,12 @@ public class OrderController {
      * @return 생성된 주문 정보
      */
     @PostMapping("/register")
-    public ResponseEntity<OrderResponse> purchase(
+    public Mono<OrderResponse> purchase(
             @RequestBody PurchaseRequest request,
             @RequestHeader("x-user-id") Long userId,
             @RequestHeader("x-user-role") UserRole role
     ) {
-        return ResponseEntity.ok(
-                orderService.register(request, userId)
-        );
+        return orderService.register(request, userId);
     }
 
 }

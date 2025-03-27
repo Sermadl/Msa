@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Entity
+@Table
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,21 +33,18 @@ public class Orders extends BaseEntity {
         this.description = description;
     }
 
-    private static final AtomicInteger counter = new AtomicInteger(0);
     private static String lastDate = getCurrentDate();
 
     public String generateOrderNumber() {
         String currentDate = getCurrentDate();
 
-        // 🔍 날짜가 변경되면 카운터 초기화
         if (!lastDate.equals(currentDate)) {
-            counter.set(0);
             lastDate = currentDate;
         }
 
-        // ✅ 4자리 숫자 생성 (0000 ~ 9999)
-        int nextNumber = counter.incrementAndGet();
-        String numberPart = String.format("%04d", nextNumber);
+        String uuid = UUID.randomUUID().toString();
+        int hash = Math.abs(uuid.hashCode());
+        String numberPart = String.format("%06d", hash % 1000000);
 
         return currentDate + numberPart;
     }
