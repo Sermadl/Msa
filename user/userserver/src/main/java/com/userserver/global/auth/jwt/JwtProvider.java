@@ -38,9 +38,7 @@ public class JwtProvider implements AuthenticationProvider {
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String USERNAME_CLAIM = "email";
     private static final String BEARER = "bearer ";
-    public static final String AUTHORIZATION = "Authorization";
 
-//    private final UserRepository userRepository;
     private final TokenService tokenService;
     private final ObjectMapper objectMapper;
 
@@ -176,7 +174,7 @@ public class JwtProvider implements AuthenticationProvider {
         // 2. Authorization 헤더에서 Bearer 토큰 추출
         String header = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         if (header != null) {
-            if (!header.toLowerCase().startsWith("bearer ")) {
+            if (!header.toLowerCase().startsWith(BEARER)) {
                 log.info("Invalid header format: {}", header);
                 throw new RuntimeException("Invalid Authorization header");
             }
