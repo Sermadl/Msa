@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -25,6 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final KafkaProducer kafkaProducer;
+    private final TransactionalOperator transactionalOperator;
 
     public Flux<UserInfoResponse> getAll() {
         return userRepository.findAll()
@@ -50,19 +52,22 @@ public class UserService {
 
     }
 
-    @Transactional
+//    @Transactional
     public Mono<UserInfoResponse> updateUser(Long userId, UserUpdateRequest request) {
-        return userRepository.findById(userId)
-                .switchIfEmpty(Mono.error(new UserNotFoundException()))
-                .flatMap(user -> {
-                    user.update(
-                            request.getUsername(),
-                            request.getEmail(),
-                            request.getPhone()
-                    );
-                    return userRepository.save(user);
-                })
-                .map(this::getUserInfo); // DTO 변환
+        return transactionalOperator.transactional(
+                userRepository.findById(userId)
+                        .switchIfEmpty(Mono.error(new UserNotFoundException()))
+                        .flatMap(user -> {
+                            user.update(
+                                    request.getUsername(),
+                                    request.getEmail(),
+                                    request.getPhone()
+                            );
+
+                            return userRepository.save(user);
+                        })
+                        .map(this::getUserInfo)
+        );
     }
 
 
