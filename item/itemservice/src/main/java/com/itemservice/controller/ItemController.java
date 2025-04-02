@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -25,8 +27,8 @@ public class ItemController {
      * @return 상품 정보 리스트
      */
     @GetMapping("/list")
-    public ResponseEntity<List<ItemResponse>> getAllItems() {
-        return ResponseEntity.ok(itemService.getAll());
+    public Flux<ItemResponse> getAllItems() {
+        return itemService.getAll();
     }
 
     /** [권한 제한 없음]
@@ -35,10 +37,10 @@ public class ItemController {
      * @return 상품 정보
      */
     @GetMapping("/{itemId}")
-    public ResponseEntity<ItemResponse> getItemById(
+    public Mono<ItemResponse> getItemById(
             @PathVariable("itemId") Long itemId
     ) {
-        return ResponseEntity.ok(itemService.getItem(itemId));
+        return itemService.getItem(itemId);
     }
 
     /** [판매자]
@@ -49,18 +51,16 @@ public class ItemController {
      * @return 등록된 상품 정보
      */
     @PostMapping("/register")
-    public ResponseEntity<ItemResponse> registerItem(
+    public Mono<ItemResponse> registerItem(
             @RequestBody ItemRegisterRequest request,
             @RequestHeader("x-user-id") Long userId,
             @RequestHeader("x-user-role") UserRole role
     ) {
         RoleCheck.isSeller(role);
 
-        return ResponseEntity.ok(
-                itemService.register(
+        return itemService.register(
                         request,
                         userId
-                )
-        );
+                );
     }
 }

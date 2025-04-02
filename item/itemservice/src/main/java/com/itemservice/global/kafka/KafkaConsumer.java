@@ -5,11 +5,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itemservice.model.entity.Item;
 import com.itemservice.repository.ItemRepository;
+import com.itemservice.service.error.ItemNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import javax.xml.catalog.Catalog;
 import java.util.HashMap;
@@ -24,7 +26,7 @@ public class KafkaConsumer {
 
     @Transactional
     @KafkaListener(topics = "db-connection-test")
-    public void processMessage(String kafkaMessage) {
+    public Mono<Void> processMessage(String kafkaMessage) {
         log.info("Kafka Message: ======> \n{}", kafkaMessage);
 
         Map<Object, Object> map = new HashMap<>();
@@ -36,12 +38,17 @@ public class KafkaConsumer {
         }
 
         Long targetItemId = Long.parseLong(String.valueOf(Optional.of(map.get("itemId"))
-                .orElseThrow(() -> new IllegalStateException("Not found itemId"))));
-        Item item = itemRepository.findById(targetItemId)
-                .orElseThrow(() -> new IllegalStateException("Item Not Found"));
+                .orElseThrow(ItemNotFoundException::new)));
         Integer soldQuantity = (Integer) Optional.of(map.get("quantity"))
                 .orElseThrow(() -> new IllegalStateException("Not found quantity"));
 
-        item.changeQuantity(item.getQuantity() - soldQuantity);
+        return itemRepository.findByIdForUpdate(targetItemId)
+                .switchIfEmpty(Mono.error(new ItemNotFoundException()))
+                .flatMap(item -> {
+                    item.changeQuantity(item.getQuantity() - soldQuantity);
+                    return itemRepository.save(item);
+                })
+                .doOnSuccess(item -> log.info("item({}) process completed", targetItemId))
+                .then();
     }
 }
