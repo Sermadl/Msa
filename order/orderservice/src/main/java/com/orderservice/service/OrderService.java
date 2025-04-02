@@ -95,7 +95,6 @@ public class OrderService {
         );
 
         return orderRepository.save(orders)
-                .doOnNext(saved -> log.info("Order saved: {}", saved.getId()))
                 .flatMap(order ->
                     registerItem(itemRequests, order)
                             .then(getOrderResponse(order))
