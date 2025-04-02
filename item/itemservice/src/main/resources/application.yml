@@ -19,6 +19,10 @@ spring:
     template:
       default-topic: error-messages
 
+  sql:
+    init:
+      mode: always
+
   jpa:
     database-platform: org.hibernate.dialect.MariaDBDialect
     hibernate:
