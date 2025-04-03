@@ -28,7 +28,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             "/user/register",
             "/item/list",
             "/user/validation",
-            "/item/list"
+            "/item/list",
+            "/item/category"
     );
 
     private static final List<Pattern> EXCLUDED_PATTERNS = List.of(
@@ -50,7 +51,9 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
 
     // 특정 url은 인증 제외
     private boolean isExcluded(String requestPath) {
-        if (EXCLUDED.stream().anyMatch(requestPath::startsWith)) {
+        if (EXCLUDED.stream().anyMatch(excludedPath ->
+                requestPath.equals(excludedPath) ||
+                        (!requestPath.equals("/item/category/register") && requestPath.startsWith(excludedPath)))) {
             log.info("Excluded fixed path: {}", requestPath);
             return true;
         }
