@@ -22,6 +22,8 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import org.springframework.web.server.i18n.AcceptHeaderLocaleContextResolver;
+import org.springframework.web.server.i18n.LocaleContextResolver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,17 +41,17 @@ public class SecurityConfig {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("messages");
+        messageSource.setBasename("classpath:messages"); // messages_ko.properties를 자동 인식
         messageSource.setDefaultEncoding("UTF-8");
-        messageSource.setCacheSeconds(60);
         messageSource.setDefaultLocale(Locale.KOREA);
-        messageSource.setUseCodeAsDefaultMessage(true);
         return messageSource;
     }
 
-    @Bean(name = "messageSourceAccessor")
-    public MessageSourceAccessor messageSourceAccessor(MessageSource messageSource) {
-        return new MessageSourceAccessor(messageSource, Locale.getDefault());
+    @Bean
+    public LocaleContextResolver localeContextResolver() {
+        var resolver = new AcceptHeaderLocaleContextResolver();
+        resolver.setDefaultLocale(Locale.KOREA); // ✅ WebFlux 기본 로케일 설정
+        return resolver;
     }
 
     @Bean
