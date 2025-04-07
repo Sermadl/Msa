@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="68de2d33-f480-425c-86bc-8342652d2a1a" name="Changes" comment="feat: User Server R2DBC로 yml 재구성" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Sermadl&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;git@github.com:Sermadl/Msa.git&quot;,
+    &quot;accountId&quot;: &quot;a5baae7b-eba3-459f-92ea-8f7237770a8f&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2tpalQRJWxfi1C5FBnL6dzzhhX5" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/Users/serma/Documents/skala/msa",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="msa" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="msa" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-b114ca120d71-intellij.indexing.shared.core-IU-242.20224.300" />
+        <option value="bundled-js-predefined-d6986cc7102b-410509235cf1-JavaScript-IU-242.20224.300" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="68de2d33-f480-425c-86bc-8342652d2a1a" name="Changes" comment="" />
+      <created>1741051620009</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1741051620009</updated>
+      <workItem from="1741051621135" duration="1079000" />
+      <workItem from="1741155946562" duration="16000" />
+      <workItem from="1741651969908" duration="21459000" />
+      <workItem from="1741737748970" duration="4851000" />
+      <workItem from="1741770179795" duration="2546000" />
+      <workItem from="1741824659228" duration="1204000" />
+      <workItem from="1741828970167" duration="2525000" />
+      <workItem from="1742170166130" duration="5442000" />
+      <workItem from="1742396259678" duration="1217000" />
+      <workItem from="1742611558659" duration="598000" />
+      <workItem from="1742780435948" duration="640000" />
+      <workItem from="1742791215647" duration="597000" />
+      <workItem from="1742809923900" duration="1206000" />
+      <workItem from="1742917105963" duration="159000" />
+      <workItem from="1742917777648" duration="14920000" />
+      <workItem from="1743136063476" duration="684000" />
+      <workItem from="1743658335862" duration="49000" />
+    </task>
+    <task id="LOCAL-00001" summary="refactor: 코드 간소화">
+      <option name="closed" value="true" />
+      <created>1741762498626</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1741762498627</updated>
+    </task>
+    <task id="LOCAL-00002" summary="feat: docker-compose를 이용하여 db 구축하기">
+      <option name="closed" value="true" />
+      <created>1741762548259</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1741762548259</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat: spring cloud gateway에 마이크로 서비스 연결하기">
+      <option name="closed" value="true" />
+      <created>1741762578720</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1741762578720</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat: GraphQL 라이브러리 추가">
+      <option name="closed" value="true" />
+      <created>1741762642535</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1741762642535</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat: Spring Cloud Gateway 연결">
+      <option name="closed" value="true" />
+      <created>1741795564080</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1741795564080</updated>
+    </task>
+    <task id="LOCAL-00006" summary="docs: 필요 없는 설정 삭제">
+      <option name="closed" value="true" />
+      <created>1741795617179</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1741795617179</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: User Server API 및 데이터베이스 조회 비동기 방식으로 전환">
+      <option name="closed" value="true" />
+      <created>1742954325965</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1742954325965</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: User Server 커스텀 에러 핸들링 필터 비동기 방식으로 전환">
+      <option name="closed" value="true" />
+      <created>1742954353679</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1742954353679</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat: User Server JWT 및 Security Config 비동기 방식으로 전환">
+      <option name="closed" value="true" />
+      <created>1742954381974</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1742954381974</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat: User Server R2DBC로 yml 재구성">
+      <option name="closed" value="true" />
+      <created>1742954422393</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1742954422393</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="refactor: 코드 간소화" />
+    <MESSAGE value="feat: docker-compose를 이용하여 db 구축하기" />
+    <MESSAGE value="feat: spring cloud gateway에 마이크로 서비스 연결하기" />
+    <MESSAGE value="feat: GraphQL 라이브러리 추가" />
+    <MESSAGE value="feat: Spring Cloud Gateway 연결" />
+    <MESSAGE value="docs: 필요 없는 설정 삭제" />
+    <MESSAGE value="feat: User Server API 및 데이터베이스 조회 비동기 방식으로 전환" />
+    <MESSAGE value="feat: User Server 커스텀 에러 핸들링 필터 비동기 방식으로 전환" />
+    <MESSAGE value="feat: User Server JWT 및 Security Config 비동기 방식으로 전환" />
+    <MESSAGE value="feat: User Server R2DBC로 yml 재구성" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: User Server R2DBC로 yml 재구성" />
+  </component>
+</project>

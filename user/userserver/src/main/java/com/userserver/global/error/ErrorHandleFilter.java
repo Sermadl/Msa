@@ -6,6 +6,7 @@ import com.userserver.global.error.model.response.ErrorResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,7 @@ import reactor.core.publisher.Mono;
 import java.util.Locale;
 
 @Component
+@Order(-2)
 @RequiredArgsConstructor
 @Slf4j
 public class ErrorHandleFilter implements WebExceptionHandler {
