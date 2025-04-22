@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -26,11 +28,19 @@ public class CategoryService {
                 .flatMap(this::getAllCategory);
     }
 
-    public Mono<CategoryDetailsResponse> getCategoryDetails(Long id) {
+//    public CategoryDetailsResponse getCategoryDetails(Long id) {
+//        return categoryRepository.findByParentId(id)
+//                .map(Category::getName)
+//                .collectList()
+//                .map(CategoryDetailsResponse::new);
+//    }
+
+    public Flux<CategoryDetailsResponse> getCategoryDetails(Long id) {
         return categoryRepository.findByParentId(id)
-                .map(Category::getName)
-                .collectList()
-                .map(CategoryDetailsResponse::new);
+                .map(category -> new CategoryDetailsResponse(
+                        category.getId(),
+                        category.getName()
+                ));
     }
 
     public Mono<Void> register(
@@ -60,9 +70,20 @@ public class CategoryService {
 
     private Mono<AllCategoryResponse> getAllCategory(Category category) {
         return categoryRepository.findByParentId(category.getId())
-                .map(Category::getName)
+                .map(child ->
+                        new CategoryDetailsResponse(
+                                child.getId(),
+                                child.getName()
+                        )
+                )
                 .collectList()
-                .map(children -> new AllCategoryResponse(category.getName(), children));
+                .map(children ->
+                        new AllCategoryResponse(
+                                category.getId(),
+                                category.getName(),
+                                children
+                        )
+                );
     }
 
 }
