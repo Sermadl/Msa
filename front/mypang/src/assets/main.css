@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* 메인 색상 테마 */
+  --color-primary: 111, 93, 245; /* 메인 색상 */
+  --color-primary-hover: 86, 73, 191; /* 호버 색 */
+  --color-secondary: 97, 81, 214; /* 메인보다 어두운 색 */
+  --color-text: 31, 41, 55; /* gray-800 RGB 값 */
+  --color-light-text: 158, 158, 158; /* gray-600 RGB 값 */
+  --color-border: 97, 81, 214; /* gray-300 RGB 값 */
+  --color-gray: 233, 233, 233; /* gray-200 RGB 값 */
+  --color-dark: 76, 64, 168;
+}
+
+@layer components {
+  .my-text-primary {
+    color: rgb(var(--color-primary));
+  }
+
+  .my-text-dark {
+    color: rgb(var(--color-dark));
+  }
+
+  .my-text-secondary {
+    color: rgb(var(--color-secondary));
+  }
+
+  .my-bg-primary {
+    background-color: rgb(var(--color-primary));
+  }
+
+  .my-bg-primary-hover {
+    background-color: rgb(var(--color-primary-hover));
+  }
+
+  .my-border-accent {
+    border-left-color: rgb(var(--color-border));
+  }
+
+  .hover\:my-text-primary:hover {
+    color: rgb(var(--color-primary));
+  }
+}
+
+@layer utilities {
+  .my-placeholder::placeholder {
+    color: rgb(var(--color-light-text));
+  }
+
+  .my-border {
+    border-color: rgb(var(--color-gray));
+  }
+}

@@ -22,16 +22,18 @@ public class Item extends BaseEntity {
     private int quantity;
     private BigDecimal price;
     private Long sellerId;
+    private Long categoryId;
 
     public void changeQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    public Item(String name, String description, int quantity, BigDecimal price, Long sellerId) {
+    public Item(String name, String description, int quantity, BigDecimal price, Long sellerId, Long categoryId) {
         this.name = name;
         this.description = description;
         this.quantity = quantity;
         this.price = price;
         this.sellerId = sellerId;
+        this.categoryId = categoryId;
     }
 }

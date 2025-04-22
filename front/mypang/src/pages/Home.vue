@@ -2,201 +2,136 @@
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import apiCall from "@/scripts/api-call";
 import { useAuthStore } from "@/scripts/store-auth";
+import Header from "@/components/Header.vue";
+import SideMenu from "@/components/SideMenu.vue";
 
 const authStore = useAuthStore();
-const categories = ref([]);
-const isDropdownOpen = ref(false);
 
+// 메뉴 상태 관리
+const menuOpen = ref(false);
+const categories = ref([]);
+const searchQuery = ref("");
+
+// 메뉴 열기
+const openMenu = () => {
+  menuOpen.value = true;
+  // 메뉴가 열릴 때 body 스크롤 방지
+  document.body.style.overflow = "hidden";
+};
+
+// 메뉴 닫기
+const closeMenu = () => {
+  menuOpen.value = false;
+  // 메뉴가 닫힐 때 body 스크롤 허용
+  document.body.style.overflow = "";
+};
+
+// 카테고리 데이터 가져오기
 const fetchCategories = async () => {
-  const result = await apiCall.get("/api/item/category", null);
-  if (result.result === apiCall.Response.SUCCESS) {
-    categories.value = result.data;
+  try {
+    const result = await apiCall.get("/api/item/category", null);
+    if (result.result === apiCall.Response.SUCCESS) {
+      categories.value = result.data;
+    }
+  } catch (error) {
+    console.error("카테고리를 불러오는 데 실패했습니다:", error);
   }
 };
 
-const closeOnClickOutside = (event) => {
-  if (!event.target.closest(".dropdown")) {
-    isDropdownOpen.value = false;
+// 검색 기능
+const handleSearch = () => {
+  if (searchQuery.value.trim()) {
+    console.log("검색어:", searchQuery.value);
+    // 여기에 검색 API 호출 로직 추가
+  }
+};
+
+// ESC 키로 메뉴 닫기
+const handleKeyDown = (event) => {
+  if (event.key === "Escape" && menuOpen.value) {
+    closeMenu();
   }
 };
 
 onMounted(() => {
   fetchCategories();
-  document.addEventListener("click", closeOnClickOutside);
+  window.addEventListener("keydown", handleKeyDown);
 });
+
 onBeforeUnmount(() => {
-  document.removeEventListener("click", closeOnClickOutside);
+  window.removeEventListener("keydown", handleKeyDown);
 });
 </script>
 
 <template>
-  <div>
-    <header>
-      <nav class="navbar bg-body-tertiary border-bottom p-0">
-        <div class="container-fluid">
-          <a></a>
-          <div>
-            <button
-              class="btn btn-sm"
-              @click="
-                $router.push(authStore.accessToken ? authStore.clearAuth() : '/login')
-              "
-            >
-              {{ authStore.accessToken ? "로그아웃" : "로그인" }}
-            </button>
-            <button class="btn btn-sm" @click="$router.push('/register')">
-              회원가입
-            </button>
-            <button class="btn btn-sm" @click="$router.push('/register')">
-              판매자 가입
-            </button>
-          </div>
-        </div>
-      </nav>
+  <div class="min-h-screen bg-gray-50">
+    <!-- 헤더 컴포넌트 -->
+    <Header @open-menu="openMenu" />
 
-      <!-- <nav
-        style="
-          width: 100%;
-          display: flex;
-          justify-content: space-between;
-          padding: 0.5rem;
-          align-items: center;
-        "
-      >
-        <div class="d-flex align-items-center">
-          <div class="dropdown">
-            <button
-              v-if="!showSidebar"
-              class="btn dropdown-toggle me-1"
-              type="button"
-              data-bs-toggle="dropdown"
-              @click="showSidebar = true"
-              style="font-size: 1.5rem"
-            >
-              ☰
-            </button>
-            <button
-              v-else
-              class="btn-close dropdown-toggle m-3"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-label="Close"
-              @click="showSidebar = false"
-            ></button>
-            <ul v-if="showSidebar" class="dropdwon-menu p-3">
-              <li>
-                <div
-                  v-for="(category, index) in categories"
-                  :key="index"
-                  class="mb-3"
-                >
-                  <button class="dropdown-item" type="button">
-                    {{ category.largeCategory }}
-                  </button>
-                </div>
-              </li>
-            </ul>
-          </div>
+    <!-- 사이드 메뉴 컴포넌트 -->
+    <div
+      class="fixed inset-0 z-20 bg-black bg-opacity-50 transition-opacity duration-300"
+      :class="menuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'"
+      @click="closeMenu"
+    ></div>
 
-          <h3 class="mb-0">마이팡</h3>
-        </div>
-        <div>
-          <button class="btn">
-            <i class="bi bi-cart2 fs-4"></i>
-          </button>
-          <button class="btn">
-            <i class="bi bi-person fs-4"></i>
-          </button>
-        </div>
-      </nav> -->
+    <Transition
+      enter-active-class="transition-transform duration-300 ease-out"
+      leave-active-class="transition-transform duration-300 ease-in"
+      enter-from-class="-translate-x-full"
+      enter-to-class="translate-x-0"
+      leave-from-class="translate-x-0"
+      leave-to-class="-translate-x-full"
+    >
+      <SideMenu
+        v-if="menuOpen"
+        @close-menu="closeMenu"
+        :categories="categories"
+        class="fixed top-0 left-0 z-30 h-full shadow-xl"
+      />
+    </Transition>
 
-      <nav
-        class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom"
-        style="width: 100%"
-      >
-        <!-- 왼쪽: 드롭다운 메뉴 + 로고 -->
-        <div class="d-flex align-items-center">
-          <div class="dropdown me-1">
-            <button
-              class="btn dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-              @click.stop="isDropdownOpen = !isDropdownOpen"
-            >
-              <i v-if="!isDropdownOpen" class="bi bi-list fs-4"></i>
-              <i v-else class="bi bi-x-lg fs-4"></i>
-            </button>
-            <ul class="dropdown-menu">
-              <li
-                v-for="(category, index) in categories"
-                :key="index"
-                class="dropdown-submenu"
-              >
-                <a class="dropdown-item" href="#">
-                  {{ category.largeCategory }}
-                </a>
-                <div
-                  v-if="
-                    category.smallCategories && category.smallCategories.length
-                  "
-                  class="submenu bg-white border p-2"
-                >
-                  <button
-                    v-for="(small, idx) in category.smallCategories"
-                    :key="idx"
-                    class="btn btn-sm w-100 mb-1 text-start"
-                  >
-                    {{ small }}
-                  </button>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <h3 class="mb-0">마이팡</h3>
-        </div>
+    <!-- 메인 컨텐츠 -->
+    <div class="flex flex-col items-center justify-center my-20">
+      <h1 class="text-2xl font-bold mb-6 text-text">상품을 검색해보세요</h1>
 
-        <!-- 오른쪽: 장바구니 / 마이페이지 -->
-        <div>
-          <button class="btn position-relative">
-            <i class="bi bi-cart2 fs-4"></i>
-            <span
-              class="badge rounded-pill bg-primary top-50 start-100 position-absolute translate-middle"
-            >
-              0
-            </span>
-          </button>
-          <button class="btn">
-            <i class="bi bi-person fs-4"></i>
-          </button>
-        </div>
-      </nav>
-    </header>
-
-    <!-- 전체 내용 래퍼 -->
-    <div>
-      <!-- 안내 문구 -->
-      <h3 class="text-center mt-5">상품을 검색해보세요</h3>
-
-      <!-- 검색 입력 -->
-      <div class="d-flex justify-content-center mt-4">
+      <!-- 수정된 검색 부분 -->
+      <div class="w-full max-w-md relative flex my-5">
         <input
-          class="form-control form-control-lg w-50"
           type="text"
           placeholder="검색어를 입력해주세요"
+          class="w-full h-12 px-4 my-border border border-border rounded-l-md focus:outline-none focus:ring-2 focus:ring-primary my-placeholder"
+          v-model="searchQuery"
+          @keyup.enter="handleSearch"
         />
-        <button class="btn btn-primary ms-2">검색</button>
+        <button
+          @click="handleSearch"
+          class="h-12 min-w-[60px] my-bg-primary hover:my-bg-primary-hover text-white rounded-r-md transition-colors duration-200 flex items-center justify-center whitespace-nowrap px-4"
+        >
+          검색
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* 드롭다운 스타일 */
 button.dropdown-toggle::after {
   display: none !important;
 }
 
-dropdown-submenu {
+.dropdown-submenu {
   position: relative;
 }
 

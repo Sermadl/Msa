@@ -33,7 +33,7 @@ public class CategoryController {
      * @return 개별 카테고리 별 깊이 1 세부 카테고리 목록
      */
     @GetMapping("/{categoryId}")
-    public Mono<CategoryDetailsResponse> categoryDetails(
+    public Flux<CategoryDetailsResponse> categoryDetails(
             @PathVariable("categoryId") Long id
     ) {
         return categoryService.getCategoryDetails(id);

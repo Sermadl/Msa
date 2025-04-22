@@ -5,10 +5,8 @@ import com.itemservice.controller.dto.response.ItemResponse;
 import com.itemservice.global.util.RoleCheck;
 import com.itemservice.global.util.UserRole;
 import com.itemservice.service.ItemService;
-import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -41,6 +39,20 @@ public class ItemController {
             @PathVariable("itemId") Long itemId
     ) {
         return itemService.getItem(itemId);
+    }
+
+    @GetMapping("/list/category/{categoryId}")
+    public Flux<ItemResponse> getAllItemsByCategory(
+            @PathVariable("categoryId") Long categoryId
+    ) {
+        return itemService.getItemByCategory(categoryId);
+    }
+
+    @GetMapping("/list/l-category/{categoryId}")
+    public Flux<ItemResponse> getAllItemsByLargeCategory(
+            @PathVariable("categoryId") Long categoryId
+    ) {
+        return itemService.getItemByLargeCategory(categoryId);
     }
 
     /** [판매자]

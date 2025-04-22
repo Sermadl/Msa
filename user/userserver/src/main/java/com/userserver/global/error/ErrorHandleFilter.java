@@ -25,7 +25,7 @@ import java.util.Locale;
 public class ErrorHandleFilter implements WebExceptionHandler {
 
     private final ObjectMapper objectMapper;
-    private final MessageSource messageSource;
+    private f ㅇinal MessageSource messageSource;
 
     @Override
     public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
