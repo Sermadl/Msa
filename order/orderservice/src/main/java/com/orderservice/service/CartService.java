@@ -51,9 +51,9 @@ public class CartService {
         return cartRepository.findByUserId(userId)
                 .switchIfEmpty(Mono.error(new CartNotFoundException()))
                 .flatMapMany(cart ->
-                    cartItemRepository.findAllByCartId(cart.getId())
+                    cartItemRepository.findAllByCartIdOrderByUpdatedAtDesc(cart.getId())
                 )
-                .flatMap(this::getCartItem);
+                .concatMap(this::getCartItem);
     }
 
     public Mono<Void> initCart(Long userId) {
