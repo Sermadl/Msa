@@ -7,7 +7,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface CartItemRepository extends R2dbcRepository<CartItem, String> {
-    Flux<CartItem> findAllByCartId(Long cartId);
+    Flux<CartItem> findAllByCartIdOrderByUpdatedAtDesc(Long cartId);
 
     Mono<CartItem> findByCartIdAndItemId(Long id, Long itemId);
 }

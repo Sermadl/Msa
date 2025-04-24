@@ -1,6 +1,7 @@
 package com.apigateway.aggregation.client;
 
 import com.apigateway.aggregation.client.dto.order.request.PurchaseRequest;
+import com.apigateway.aggregation.client.dto.order.response.CartItemResponse;
 import com.apigateway.aggregation.client.dto.order.response.OrderResponse;
 import com.apigateway.aggregation.model.UserRole;
 import lombok.RequiredArgsConstructor;
@@ -151,5 +152,14 @@ public class OrderServiceClient {
                 .bodyToMono(OrderResponse.class);
     }
 
+    public Flux<CartItemResponse> myCart(Long userId, UserRole role) {
+        return webClientBuilder.build()
+                .get()
+                .uri("http://ORDER-SERVICE/cart/my")
+                .header("x-user-id", String.valueOf(userId))
+                .header("x-user-role", String.valueOf(role))
+                .retrieve()
+                .bodyToFlux(CartItemResponse.class);
+    }
 }
 
