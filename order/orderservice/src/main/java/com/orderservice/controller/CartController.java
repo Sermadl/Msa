@@ -48,4 +48,38 @@ public class CartController {
 
         return cartService.initCart(userId);
     }
+
+    @PostMapping("/{itemId}/add")
+    public Mono<CartItemResponse> addCartItem(
+            @PathVariable("itemId") Long itemId,
+            @RequestHeader("x-user-id") Long userId,
+            @RequestHeader("x-user-role") UserRole role
+    ) {
+        RoleCheck.isUser(role);
+
+        return cartService.addItem(userId, itemId);
+    }
+
+    @PostMapping("/{itemId}/decrease")
+    public Mono<CartItemResponse> decreaseCartItem(
+            @PathVariable("itemId") Long itemId,
+            @RequestHeader("x-user-id") Long userId,
+            @RequestHeader("x-user-role") UserRole role
+    ) {
+        RoleCheck.isUser(role);
+
+        return cartService.decreaseItem(userId, itemId);
+    }
+
+    @PostMapping("/{itemId}")
+    public Mono<CartItemResponse> selectCartItem(
+            @PathVariable("itemId") Long itemId,
+            @RequestParam("select") boolean select,
+            @RequestHeader("x-user-id") Long userId,
+            @RequestHeader("x-user-role") UserRole role
+    ){
+        RoleCheck.isUser(role);
+
+        return cartService.selectItem(userId, itemId, select);
+    }
 }
