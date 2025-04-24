@@ -39,7 +39,8 @@ public class AuthService {
                                 new LoginResponse(
                                         token.getAccessToken(),
                                         token.getRefreshToken(),
-                                        user.getUserRole()
+                                        user.getUserRole(),
+                                        user.getUsername()
                                 )
                         );
                     } else {

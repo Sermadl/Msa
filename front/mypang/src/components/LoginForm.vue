@@ -49,27 +49,36 @@ const emailError = computed(() => {
 </script>
 
 <template>
-  <div class="d-flex justify-content-center align-items-center">
-    <div class="card p-4" style="min-width: 300px">
-      <h3 class="text-center mb-3">로그인</h3>
-      <div class="mb-3">
+  <div class="flex justify-center items-center">
+    <div class="mt-20 bg-white rounded-lg shadow-md p-6 w-80">
+      <h3 class="text-xl font-semibold text-center mb-4 my-text-dark">로그인</h3>
+      <div class="mb-4">
         <input
           v-model="email"
           type="email"
-          class="form-control"
+          class="w-full px-3 py-2 border my-border rounded-md 
+          focus:outline-none focus:my-ring focus:ring-2 my-placeholder"
           placeholder="이메일"
         />
-        <small class="text-danger" v-if="emailError">{{ emailError }}</small>
+        <div class="h-5">
+          <small class="text-red-500 text-sm" v-if="emailError">{{ emailError }}</small>
+        </div>
       </div>
-      <div class="mb-3">
+      <div class="mb-4">
         <input
           v-model="password"
           type="password"
-          class="form-control"
+          class="w-full px-3 py-2 border my-border rounded-md 
+          focus:outline-none focus:my-ring focus:ring-2 my-placeholder"
           placeholder="비밀번호"
         />
       </div>
-      <button class="btn btn-primary w-100" @click="login">로그인</button>
+      <button 
+        class="w-full my-bg-primary hover:my-bg-primary-hover text-white font-medium py-2 px-4 rounded-md transition-colors" 
+        @click="login"
+      >
+        로그인
+      </button>
     </div>
   </div>
 </template>

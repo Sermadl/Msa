@@ -3,6 +3,12 @@
     <!-- 첫 번째 네비게이션 바 -->
     <nav class="border-b text-sm">
       <div class="container mx-auto px-4 py-1 flex justify-end gap-4">
+        <div class="flex"
+        v-if="authStore.accessToken">
+          <p class="font-medium my-text-primary">
+            {{ authStore.getName() }}
+          </p> 님
+        </div>
         <button
           class="hover:my-text-primary"
           @click="
@@ -14,6 +20,7 @@
           {{ authStore.accessToken ? "로그아웃" : "로그인" }}
         </button>
         <button
+          v-if="!authStore.accessToken"
           class="hover:my-text-primary"
           @click="$router.push('/register')"
         >

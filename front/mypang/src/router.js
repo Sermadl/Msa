@@ -4,18 +4,23 @@ import Unknown from "./pages/Unknown.vue";
 import Home from "./pages/Home.vue";
 import Login from "./pages/Login.vue";
 import Register from "./pages/Register.vue";
+import ItemDetail from "./pages/ItemDetail.vue";
 
 const routes = [
   { path: "/", component: Home },
   { path: "/start", component: Start },
-  { path: "/login", component: Login },
-  { path: "/register", component: Register },
-  { path: "/:pathMatch(.*)*", component: Unknown }
+  { path: "/login", component: Login, meta: { hideHeader: true } },
+  { path: "/register", component: Register, meta: { hideHeader: true } },
+  { path: "/item/:itemId", component: ItemDetail },
+  { path: "/:pathMatch(.*)*", component: Unknown },
 ];
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    return { top: 0 };
+  },
 });
 
 export default router;
