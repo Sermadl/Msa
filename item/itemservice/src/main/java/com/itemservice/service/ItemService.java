@@ -1,6 +1,7 @@
 package com.itemservice.service;
 
 import com.itemservice.controller.dto.request.ItemRegisterRequest;
+import com.itemservice.controller.dto.response.ItemDetailResponse;
 import com.itemservice.controller.dto.response.ItemResponse;
 import com.itemservice.model.entity.Category;
 import com.itemservice.model.entity.Item;
@@ -41,10 +42,10 @@ public class ItemService {
                 .map(this::getItemResponse);
     }
 
-    public Mono<ItemResponse> getItem(Long itemId) {
+    public Mono<ItemDetailResponse> getItem(Long itemId) {
         return itemRepository.findById(itemId)
                 .switchIfEmpty(Mono.error(new ItemNotFoundException()))
-                .map(this::getItemResponse);
+                .map(this::getItemDetailResponse);
     }
 
     public Flux<ItemResponse> getItemByCategory(Long categoryId) {
@@ -60,6 +61,14 @@ public class ItemService {
 
     private ItemResponse getItemResponse(Item item) {
         return new ItemResponse(
+                item.getId(),
+                item.getName(),
+                item.getPrice()
+        );
+    }
+
+    private ItemDetailResponse getItemDetailResponse(Item item) {
+        return new ItemDetailResponse(
                 item.getId(),
                 item.getName(),
                 item.getDescription(),

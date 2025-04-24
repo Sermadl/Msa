@@ -31,12 +31,20 @@
     background-color: rgb(var(--color-primary));
   }
 
+  .my-bg-secondary {
+    background-color: rgb(var(--color-gray));
+  }
+
   .my-bg-primary-hover {
     background-color: rgb(var(--color-primary-hover));
   }
 
   .my-border-accent {
     border-left-color: rgb(var(--color-border));
+  }
+
+  .my-ring{
+    --tw-ring-color: rgb(var(--color-border));
   }
 
   .hover\:my-text-primary:hover {

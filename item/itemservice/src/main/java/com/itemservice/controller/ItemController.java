@@ -1,6 +1,7 @@
 package com.itemservice.controller;
 
 import com.itemservice.controller.dto.request.ItemRegisterRequest;
+import com.itemservice.controller.dto.response.ItemDetailResponse;
 import com.itemservice.controller.dto.response.ItemResponse;
 import com.itemservice.global.util.RoleCheck;
 import com.itemservice.global.util.UserRole;
@@ -35,7 +36,7 @@ public class ItemController {
      * @return 상품 정보
      */
     @GetMapping("/{itemId}")
-    public Mono<ItemResponse> getItemById(
+    public Mono<ItemDetailResponse> getItemById(
             @PathVariable("itemId") Long itemId
     ) {
         return itemService.getItem(itemId);
