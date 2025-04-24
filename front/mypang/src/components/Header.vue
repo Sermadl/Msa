@@ -45,7 +45,8 @@
           <button @click="$emit('openMenu')" class="p-1">
             <Menu class="h-6 w-6" />
           </button>
-          <span class="flex font-bold text-xl my-text-primary gap-1">
+          <span class="flex font-bold text-xl my-text-primary gap-1"
+          @click="$router.push('/')">
             <img
               src="/my-pang.png"
               alt="Logo"
@@ -57,7 +58,8 @@
 
         <!-- 오른쪽: 장바구니 및 마이페이지 아이콘 -->
         <div class="flex items-center gap-4">
-          <button class="relative">
+          <button class="relative"
+          @click="$router.push('/my-cart')">
             <ShoppingCart class="h-6 w-6" />
             <span
               class="absolute -top-2 -right-2 my-bg-primary text-white rounded-full text-[11px] w-5 h-4 items-center justify-center"
@@ -65,7 +67,7 @@
               0
             </span>
           </button>
-          <button>
+          <button @click="$router.push('/my-page')">
             <User class="h-6 w-6" />
           </button>
         </div>

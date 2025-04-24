@@ -6,7 +6,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class CartItemResponse {
-    private long itemId;
+    private Long itemId;
     private int quantity;
     private boolean isSelected;
 }
