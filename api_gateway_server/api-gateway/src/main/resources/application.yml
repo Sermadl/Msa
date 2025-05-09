@@ -1,56 +1,7 @@
+# application.yml (공통 설정)
+spring:
+  profiles:
+    active: prod
+
 server:
   port: 19901
-
-spring:
-  main:
-    web-application-type: reactive
-  cloud:
-    gateway:
-      globalcors:
-        corsConfigurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods: "*"
-            allowedHeaders: "*"
-      discovery:
-        locator:
-          enabled: true  # Eureka에서 자동으로 서비스 찾기
-          lower-case-service-id: true
-      routes:
-        - id: user-service
-          uri: lb://USER-SERVICE
-          predicates:
-            - Path=/user/**
-#            - Header=Service-Type, user
-          filters:
-            - name: AuthenticationFilter
-            - StripPrefix=1
-
-        - id: order-service
-          uri: lb://ORDER-SERVICE
-          predicates:
-            - Path=/order/**
-#            - Header=Service-Type, order
-          filters:
-            - name: AuthenticationFilter
-            - StripPrefix=1
-
-        - id: item-service
-          uri: lb://ITEM-SERVICE
-          predicates:
-            - Path=/item/**
-#            - Header=Service-Type, item
-          filters:
-            - name: AuthenticationFilter
-            - StripPrefix=1
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/  # Eureka 서버의 URL을 지정
-
-#logging:
-#  level:
-#    org.springframework.cloud.openfeign: DEBUG
-#    org.springframework.cloud.gateway: DEBUG
-#    org.springframework.web: DEBUG

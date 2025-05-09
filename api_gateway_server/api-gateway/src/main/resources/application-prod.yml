@@ -1,0 +1,41 @@
+spring:
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods: "*"
+            allowedHeaders: "*"
+      routes:
+        - id: user-service
+          uri: http://sk067-my-userserver:8081  # K8s Service 이름과 포트
+          predicates:
+            - Path=/user/**
+          filters:
+            - name: AuthenticationFilter
+            - StripPrefix=1
+
+        - id: order-service
+          uri: http://sk067-my-orderserver:8082
+          predicates:
+            - Path=/order/**
+          filters:
+            - name: AuthenticationFilter
+            - StripPrefix=1
+
+        - id: item-service
+          uri: http://sk067-my-itemserver:8083
+          predicates:
+            - Path=/item/**
+          filters:
+            - name: AuthenticationFilter
+            - StripPrefix=1
+item:
+  uri: http://sk067-my-itemserver:8083
+user:
+  uri: http://sk067-my-userserver:8081
+order:
+  uri: http://sk067-my-orderserver:8082
