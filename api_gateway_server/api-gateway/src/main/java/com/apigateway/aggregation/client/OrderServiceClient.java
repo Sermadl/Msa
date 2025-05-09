@@ -6,6 +6,7 @@ import com.apigateway.aggregation.client.dto.order.response.OrderResponse;
 import com.apigateway.aggregation.model.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -16,6 +17,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class OrderServiceClient {
 
+    @Value("${order.uri}")
+    private String orderUri;
     private final WebClient.Builder webClientBuilder;
 
     /** [관리자]
@@ -27,7 +30,7 @@ public class OrderServiceClient {
     public Flux<OrderResponse> getAllOrders(Long userId, UserRole role) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ORDER-SERVICE/list")
+                .uri(orderUri + "/list")
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .retrieve()
@@ -44,7 +47,7 @@ public class OrderServiceClient {
     public Mono<OrderResponse> findUserOrder(Long orderId, Long userId, UserRole role) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ORDER-SERVICE/{orderId}", orderId)
+                .uri(orderUri + "/{orderId}", orderId)
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .retrieve()
@@ -61,7 +64,7 @@ public class OrderServiceClient {
     public Mono<OrderResponse> findSellerOrder(Long orderId, Long userId, UserRole role) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ORDER-SERVICE/seller/{orderId}", orderId)
+                .uri(orderUri + "/seller/{orderId}", orderId)
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .retrieve()
@@ -77,7 +80,7 @@ public class OrderServiceClient {
     public Flux<OrderResponse> getMyPurchaseList(Long userId, UserRole role) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ORDER-SERVICE/myList")
+                .uri(orderUri + "/myList")
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .retrieve()
@@ -93,7 +96,7 @@ public class OrderServiceClient {
     public Flux<OrderResponse> getPurchaseListForSeller(Long sellerId, UserRole role) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ORDER-SERVICE/seller/myList")
+                .uri(orderUri + "/seller/myList")
                 .header("x-user-id", String.valueOf(sellerId))
                 .header("x-user-role", String.valueOf(role))
                 .retrieve()
@@ -110,7 +113,7 @@ public class OrderServiceClient {
     public Flux<OrderResponse> getPurchaseListByItem(Long itemId, Long sellerId, UserRole role) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ORDER-SERVICE/seller/myList/{itemId}", itemId)
+                .uri(orderUri + "/seller/myList/{itemId}", itemId)
                 .header("x-user-id", String.valueOf(sellerId))
                 .header("x-user-role", String.valueOf(role))
                 .retrieve()
@@ -127,7 +130,7 @@ public class OrderServiceClient {
     public Flux<OrderResponse> getUserPurchaseList(Long customerId, Long userId, UserRole role) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ORDER-SERVICE/list/{customerId}", customerId)
+                .uri(orderUri + "/list/{customerId}", customerId)
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .retrieve()
@@ -144,7 +147,7 @@ public class OrderServiceClient {
     public Mono<OrderResponse> purchase(PurchaseRequest request, Long userId, UserRole role) {
         return webClientBuilder.build()
                 .post()
-                .uri("http://ORDER-SERVICE/order")
+                .uri(orderUri + "/order")
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .bodyValue(request)
@@ -155,7 +158,7 @@ public class OrderServiceClient {
     public Flux<CartItemResponse> myCart(Long userId, UserRole role) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ORDER-SERVICE/cart/my")
+                .uri(orderUri + "/cart/my")
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .retrieve()

@@ -10,6 +10,7 @@ import com.apigateway.aggregation.model.UserRole;
 import com.apigateway.global.error.model.UnknownException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -23,6 +24,9 @@ import reactor.core.publisher.Mono;
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceClient {
+
+    @Value("${user.uri}")
+    private String userUri;
     private final WebClient.Builder webClientBuilder;
 
     /** [관리자]
@@ -34,7 +38,7 @@ public class UserServiceClient {
     public Flux<UserInfoResponse> getAllUsers(Long userId, UserRole role) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://USER-SERVICE/list")
+                .uri(userUri + "/list")
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .retrieve()
@@ -51,7 +55,7 @@ public class UserServiceClient {
     public Mono<UserInfoResponse> getUserById(Long targetId, Long userId, UserRole role) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://USER-SERVICE/{userId}", targetId)
+                .uri(userUri + "/{userId}", targetId)
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .retrieve()
@@ -67,7 +71,7 @@ public class UserServiceClient {
     public Mono<UserInfoResponse> getMyInfo(Long userId, UserRole role) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://USER-SERVICE/my")
+                .uri(userUri + "/my")
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .retrieve()
@@ -82,7 +86,7 @@ public class UserServiceClient {
     public Mono<UserInfoResponse> createUser(RegisterUserRequest request, Long userId, UserRole role) {
         return webClientBuilder.build()
                 .post()
-                .uri("http://USER-SERVICE/register")
+                .uri(userUri + "/register")
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .bodyValue(request)
@@ -98,7 +102,7 @@ public class UserServiceClient {
     public Mono<UserInfoResponse> updateUser(RegisterUserRequest request, Long userId, UserRole role) {
         return webClientBuilder.build()
                 .post()
-                .uri("http://USER-SERVICE/update")
+                .uri(userUri + "/update")
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .bodyValue(request)
@@ -109,7 +113,7 @@ public class UserServiceClient {
     public Mono<LoginResponse> login(LoginRequest request) {
         return webClientBuilder.build()
                 .post()
-                .uri("http://USER-SERVICE/login")
+                .uri(userUri + "/login")
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(LoginResponse.class);
@@ -126,7 +130,7 @@ public class UserServiceClient {
 
         return webClientBuilder.build()
                 .get()
-                .uri("http://USER-SERVICE/validation")
+                .uri(userUri + "/validation")
                 .header(HttpHeaders.AUTHORIZATION, header)
                 .retrieve()
                 .onStatus(HttpStatusCode::is4xxClientError, clientResponse -> {

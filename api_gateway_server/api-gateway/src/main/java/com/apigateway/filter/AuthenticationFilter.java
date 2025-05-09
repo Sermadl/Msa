@@ -3,6 +3,7 @@ package com.apigateway.filter;
 import com.apigateway.aggregation.client.dto.user.response.ValidTokenResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -20,7 +21,6 @@ import java.util.regex.Pattern;
 @Component
 @Slf4j
 public class AuthenticationFilter extends AbstractGatewayFilterFactory<AuthenticationFilter.Config> {
-
     private final WebClient webClient;
 
     private static final List<String> EXCLUDED = List.of(
@@ -37,9 +37,10 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             Pattern.compile("^/item/list/\\d+$")
     );
 
-    public AuthenticationFilter(WebClient.Builder webClient) {
+    public AuthenticationFilter(WebClient.Builder webClient,
+                                @Value("${user.uri}") String userUri) {
         super(Config.class);
-        this.webClient = webClient.baseUrl("http://USER-SERVICE").build();
+        this.webClient = webClient.baseUrl(userUri).build();
     }
 
     @Override

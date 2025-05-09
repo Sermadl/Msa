@@ -5,6 +5,7 @@ import com.apigateway.aggregation.client.dto.item.response.ItemResponse;
 import com.apigateway.aggregation.model.UserRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -15,6 +16,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ItemServiceClient {
 
+    @Value("${item.uri}")
+    private String itemUri;
     private final WebClient.Builder webClientBuilder;
 
     /** [권한 제한 없음]
@@ -24,7 +27,7 @@ public class ItemServiceClient {
     public Flux<ItemResponse> getAllItems() {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ITEM-SERVICE/list")
+                .uri(itemUri + "/list")
                 .retrieve()
                 .bodyToFlux(ItemResponse.class);
     }
@@ -37,7 +40,7 @@ public class ItemServiceClient {
     public Mono<ItemResponse> getItemById(Long itemId) {
         return webClientBuilder.build()
                 .get()
-                .uri("http://ITEM-SERVICE/{itemId}", itemId)
+                .uri(itemUri + "/{itemId}", itemId)
                 .retrieve()
                 .bodyToMono(ItemResponse.class);
     }
@@ -54,7 +57,7 @@ public class ItemServiceClient {
                                            UserRole role) {
         return webClientBuilder.build()
                 .post()
-                .uri("http://ITEM-SERVICE/register")
+                .uri(itemUri + "/register")
                 .header("x-user-id", String.valueOf(userId))
                 .header("x-user-role", String.valueOf(role))
                 .bodyValue(request)
