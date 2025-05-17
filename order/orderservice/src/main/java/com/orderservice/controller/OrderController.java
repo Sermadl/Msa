@@ -5,17 +5,12 @@ import com.orderservice.controller.dto.response.OrderResponse;
 import com.orderservice.controller.dto.response.OrderSellerResponse;
 import com.orderservice.global.util.RoleCheck;
 import com.orderservice.global.util.UserRole;
-import com.orderservice.model.entity.Orders;
 import com.orderservice.service.OrderService;
-import jakarta.ws.rs.Path;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.List;
 
 @RestController
 @Slf4j

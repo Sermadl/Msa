@@ -10,6 +10,8 @@ import com.orderservice.global.util.UserRole;
 import com.orderservice.global.util.error.HasNoAuthorityException;
 import com.orderservice.model.entity.OrderItem;
 import com.orderservice.model.entity.Orders;
+import com.orderservice.repository.CartItemRepository;
+import com.orderservice.repository.CartRepository;
 import com.orderservice.repository.OrderItemRepository;
 import com.orderservice.repository.OrderRepository;
 import com.orderservice.service.error.OrderItemNotFoundException;
@@ -29,6 +31,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final KafkaProducer kafkaProducer;
     private final OrderItemRepository orderItemRepository;
+    private final CartItemRepository cartItemRepository;
 
     public Flux<OrderResponse> getAll() {
         return orderRepository.findAll()
@@ -101,25 +104,31 @@ public class OrderService {
                 );
     }
 
-    private Mono<Void> registerItem(List<PurchaseItemRequest> requests,
-                              Orders order) {
+    private Mono<Void> registerItem(List<PurchaseItemRequest> requests, Orders order) {
         return Flux.fromIterable(requests)
-                .flatMap(request -> {
-                    OrderItem orderItem = new OrderItem(
-                            order.getId(),
-                            request.getItemId(),
-                            request.getSellerId(),
-                            request.getName(),
-                            request.getQuantity(),
-                            request.getPrice()
-                    );
+                .flatMap(request ->
+                        cartItemRepository.deleteByItemId(request.getItemId())
+                                .flatMap(deleted -> {
+                                    if (!deleted) {
+                                        return Mono.error(new OrderItemNotFoundException());
+                                    }
 
-                    return orderItemRepository.save(orderItem)
-                            .doOnSuccess(kafkaProducer::sendDbUpdateMessage);
-                })
+                                    OrderItem orderItem = new OrderItem(
+                                            order.getId(),
+                                            request.getItemId(),
+                                            request.getSellerId(),
+                                            request.getName(),
+                                            request.getQuantity(),
+                                            request.getPrice()
+                                    );
+
+                                    return orderItemRepository.save(orderItem)
+                                            .doOnSuccess(kafkaProducer::sendDbUpdateMessage);
+                                })
+                )
                 .then();
-
     }
+
 
     private Mono<OrderResponse> getOrderResponse(Orders order) {
          return orderItemRepository.findByOrderId(order.getId())
