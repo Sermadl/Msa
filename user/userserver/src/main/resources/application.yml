@@ -11,7 +11,7 @@ spring:
   profiles:
     active: local
   kafka:
-    bootstrap-servers: localhost:10000,localhost:10001,localhost:10002
+    bootstrap-servers: localhost:10000,localhost:10001,localhost:10002 # 카프카 서버 주소
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
