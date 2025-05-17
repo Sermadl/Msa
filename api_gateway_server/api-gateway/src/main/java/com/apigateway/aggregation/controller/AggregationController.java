@@ -9,6 +9,7 @@ import com.apigateway.aggregation.client.dto.order.response.OrderItemResponse;
 import com.apigateway.aggregation.client.dto.order.response.OrderResponse;
 import com.apigateway.aggregation.client.dto.user.response.ValidTokenResponse;
 import com.apigateway.aggregation.controller.dto.response.MyCartResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +20,7 @@ import reactor.core.publisher.Flux;
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@SecurityRequirement(name = "JWT Token")
 public class AggregationController {
     private final UserServiceClient userServiceClient;
     private final OrderServiceClient orderServiceClient;
