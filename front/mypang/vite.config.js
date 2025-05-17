@@ -14,6 +14,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
+        // target: 'https://sk067-mypang.skala25a.project.skala-ai.com', // 백엔드 API 주소
         target: 'http://localhost:19901', // 백엔드 API 주소
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, ''),

@@ -7,6 +7,7 @@ import Register from "./pages/Register.vue";
 import ItemDetail from "./pages/ItemDetail.vue";
 import MyCart from "./pages/MyCart.vue";
 import MyPage from "./pages/MyPage.vue";
+import MyOrder from "./pages/MyOrder.vue";
 
 const routes = [
   { path: "/", component: Home },
@@ -16,6 +17,7 @@ const routes = [
   { path: "/item/:itemId", component: ItemDetail },
   { path: "/my-cart", component: MyCart },
   { path: "/my-page", component: MyPage },
+  {  path: "/order", component: MyOrder },
   { path: "/:pathMatch(.*)*", component: Unknown },
 ];
 
