@@ -1,24 +1,27 @@
 package com.userserver.global.auth.jwt;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ReactiveRedisTemplate;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
 public class TokenService {
-    private final RedisTemplate<String, String> redisTemplate;
+    private final ReactiveRedisTemplate<String, String> redisTemplate;
 
-    public void storeRefreshTokenJti(String userId, String jti) {
-        redisTemplate.opsForValue().set(userId, jti);
+    public Mono<Boolean> storeRefreshTokenJti(String userId, String jti) {
+        return redisTemplate.opsForValue().set(userId, jti);
     }
 
-    public void resetRefreshTokenJti(String userId, String token) {
-        redisTemplate.opsForValue().setIfPresent(userId, token);
+    public Mono<Boolean> resetRefreshTokenJti(String userId, String token) {
+        return redisTemplate.opsForValue().setIfPresent(userId, token);
     }
 
-    public boolean isRefreshTokenValid(String userId, String jti) {
-        String storedJti = redisTemplate.opsForValue().get(userId);
-        return jti.equals(storedJti);
+    public Mono<Boolean> isRefreshTokenValid(String userId, String jti) {
+        return redisTemplate.opsForValue()
+                .get(userId)
+                .map(jti::equals)
+                .defaultIfEmpty(false); // 값이 없으면 false 반환
     }
 }

@@ -7,6 +7,7 @@ import com.userserver.global.auth.jwt.exception.TokenExpiredException;
 import com.userserver.user.model.entity.User;
 import com.userserver.user.model.entity.UserRole;
 import io.jsonwebtoken.*;
+import io.lettuce.core.RedisException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
+import reactor.core.publisher.Mono;
 
 import java.util.Date;
 import java.util.UUID;
@@ -82,7 +84,9 @@ public class JwtProvider implements AuthenticationProvider {
         claims.put("userId", userId);
         claims.put("userRole", userRole);
 
-        tokenService.storeRefreshTokenJti(userId, jti);
+        tokenService.storeRefreshTokenJti(userId, jti)
+                .doOnError(RedisException::new)
+                .subscribe();
 
         return Jwts
                 .builder()
@@ -101,7 +105,9 @@ public class JwtProvider implements AuthenticationProvider {
         claims.put("userId", userId);
         claims.put("userRole", userRole);
 
-        tokenService.resetRefreshTokenJti(userId, jti);
+        tokenService.resetRefreshTokenJti(userId, jti)
+                .doOnError(RedisException::new)
+                .subscribe();
 
         return Jwts
                 .builder()
@@ -150,17 +156,20 @@ public class JwtProvider implements AuthenticationProvider {
 //                .build();
 //    }
 
-    public String getUserIdFromToken(String token) {
+    public Mono<String> getUserIdFromToken(String token) {
         Jws<Claims> claims = validateRefreshToken(token);
 
         String jti = claims.getBody().getId();
         String userId = claims.getBody().get("userId", String.class);
 
-        if (!tokenService.isRefreshTokenValid(userId, jti)){
-            throw new InvalidTokenException();
-        }
-
-        return userId;
+        return tokenService.isRefreshTokenValid(userId, jti)
+                .flatMap(valid -> {
+                    if (valid) {
+                        return Mono.just(userId);
+                    } else {
+                        return Mono.error(new InvalidTokenException());
+                    }
+                });
     }
 
     public String getAccessTokenFromHeader(ServerHttpRequest request) {
