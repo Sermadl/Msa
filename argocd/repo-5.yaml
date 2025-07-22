@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: sk067-repo-5
+  namespace: skala-argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+type: Opaque
+stringData:
+  name: sk067-mypang-ui
+  type: git
+  url:
+  username:
+  project: class-3
+  password:
