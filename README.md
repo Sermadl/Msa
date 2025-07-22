@@ -12,7 +12,7 @@ Gateway에서는 인증을 처리하고, 각 서비스는 권한에 따라 API �
 
 - ✅ 회원가입/로그인부터 주문 및 상품 관리까지 전반적인 이커머스 기능 구현
 - ✅ 인증은 Gateway 단에서 JWT로 처리하고, 각 서비스는 권한만 체크
-- ✅ Kafka 기반 비동기 메시징을 활용한 상품 재고 처리
+- ✅ Kafka 기반 비동기 메시징을 활용한 상품 재고 처리 (동시성 문제는 비관적락으로 처리)
 - ✅ 주문-상품-사용자 정보를 집계한 마이페이지 Aggregation 기능 제공
 
 ---
@@ -20,6 +20,8 @@ Gateway에서는 인증을 처리하고, 각 서비스는 권한에 따라 API �
 ## **⚙️** 시스템 아키텍처
 
 ![image](https://github.com/user-attachments/assets/a31e1520-2103-4343-ad41-d255d3b44dd2)
+
+### _k8s에 배포된 서버에는 `eureka server`는 사용하지 않았습니다 (로컬 개발 용도로 사용)_
 
 ---
 
@@ -30,6 +32,7 @@ Gateway에서는 인증을 처리하고, 각 서비스는 권한에 따라 API �
 - **🔐 Authentication**: JWT, Redis (세션 또는 토큰 캐시)
 - **🗄️ Database**: MariaDB (User, Order, Item)
 - **📬 Messaging**: Kafka (주문 시 상품 수량 동기화)
+- **🚀 Cloud/Infra**: k8s, Docker, Jenkins, ArgoCD
 - **📑 API 명세서**: [Postman API Docs](https://documenter.getpostman.com/view/31441199/2sAYkHpySr)
 
 ---
@@ -42,10 +45,12 @@ Gateway에서는 인증을 처리하고, 각 서비스는 권한에 따라 API �
 | Spring Cloud Gateway | API Gateway 및 인증 필터 구현 |
 | Spring WebFlux | 비동기 처리 기반 마이크로서비스 운영 |
 | Eureka | 마이크로서비스 간 서비스 디스커버리 |
+| k8s | 서버 관리 자동화 |
 | Redis | 토큰 블랙리스트 및 캐시 저장소 |
 | Kafka | 주문/재고 이벤트 처리용 메시징 시스템 |
 | MariaDB | 각 서비스별 데이터 저장소 |
 | Postman | API 명세서 관리 및 테스트 |
+| Docker / Jenkins / ArgoDB | 배포 자동화 |
 
 ---
 
