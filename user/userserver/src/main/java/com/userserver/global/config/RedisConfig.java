@@ -25,10 +25,4 @@ public class RedisConfig {
         return new LettuceConnectionFactory(host, port);
     }
 
-    @Bean
-    public ReactiveRedisTemplate<String, String> reactiveRedisTemplate(ReactiveRedisConnectionFactory factory) {
-        RedisSerializationContext<String, String> context = RedisSerializationContext.string();
-        return new ReactiveRedisTemplate<>(factory, context);
-    }
-
 }
