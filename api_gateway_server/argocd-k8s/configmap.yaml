@@ -1,0 +1,9 @@
+# gateway-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gateway-config
+data:
+  USER_URI: http://sk067-my-userserver:8081
+  ORDER_URI: http://sk067-my-orderserver:8082
+  ITEM_URI: http://sk067-my-itemserver:8083
