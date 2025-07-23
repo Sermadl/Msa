@@ -1,0 +1,108 @@
+# Dockerfile 방식으로 SQL 초기화 수행 (ConfigMap 제거됨)
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sk067-my-db-stateful
+  namespace: skala-practice
+spec:
+  serviceName: sk067-my-db-stateful
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sk067-my-db-stateful
+  template:
+    metadata:
+      labels:
+        app: sk067-my-db-stateful
+    spec:
+      containers:
+        - name: order-db
+          image: image:1.1.0
+          ports:
+            - containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: ${ROOT_PASSWORD}
+            - name: MYSQL_DATABASE
+              value: ${ORDER_DATABASE}
+            - name: MYSQL_USER
+              value: ${USER}
+            - name: MYSQL_PASSWORD
+              value: ${PASSWORD}
+            - name: MYSQL_TCP_PORT
+              value: "3306"
+
+
+        - name: item-db
+          image: image:1.1.0
+          ports:
+            - containerPort: 3307
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: ${ROOT_PASSWORD}
+            - name: MYSQL_DATABASE
+              value: ${ITEM_DATABASE}
+            - name: MYSQL_USER
+              value: ${USER}
+            - name: MYSQL_PASSWORD
+              value: ${PASSWORD}
+            - name: MYSQL_TCP_PORT
+              value: "3307"
+
+
+        - name: user-db
+          image: image:1.1.0
+          ports:
+            - containerPort: 3308
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: ${ROOT_PASSWORD}
+            - name: MYSQL_DATABASE
+              value: ${USER_DATABASE}
+            - name: MYSQL_USER
+              value: ${USER}
+            - name: MYSQL_PASSWORD
+              value: ${PASSWORD}
+            - name: MYSQL_TCP_PORT
+              value: "3308"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sk067-order-db
+  namespace: skala-practice
+spec:
+  selector:
+    app: sk067-my-db-stateful
+  ports:
+    - port: 3306
+      targetPort: 3306
+      name: order
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sk067-item-db
+  namespace: skala-practice
+spec:
+  selector:
+    app: sk067-my-db-stateful
+  ports:
+    - port: 3307
+      targetPort: 3307
+      name: item
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sk067-user-db
+  namespace: skala-practice
+spec:
+  selector:
+    app: sk067-my-db-stateful
+  ports:
+    - port: 3308
+      targetPort: 3308
+      name: user

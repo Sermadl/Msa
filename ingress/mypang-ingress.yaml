@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+  name: sk067-mypang-ingress
+  namespace: skala-practice
+spec:
+  ingressClassName: public-nginx
+  rules:
+  - host: sk067-mypang
+    http:
+      paths:
+      - backend:
+          service:
+            name: sk067-my-apigateway
+            port:
+              number: 19901
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - sk067-mypang
+    secretName: sk067-mypang-tls-secret
